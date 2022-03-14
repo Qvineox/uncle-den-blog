@@ -1,0 +1,134 @@
+.map__bubble {
+    border-radius: 50%;
+
+    position: absolute;
+
+    width: 20vw;
+    height: 20vw;
+
+    background-color: #e9e9e7;
+
+    opacity: 0;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.map__bubble.Africa {
+    left: 50vw;
+    top: 55vh;
+
+    background-color: lightcoral;
+}
+
+.map__bubble.SouthAmerica {
+    left: 5vw;
+    top: 35vh;
+
+    width: 25vw;
+    height: 25vw;
+
+    background-color: lightblue;
+}
+
+.map__bubble.GreatBritain {
+    left: 30vw;
+    top: 25vh;
+
+    width: 13vw;
+    height: 13vw;
+
+    background-color: lightseagreen;
+}
+
+.map__bubble.Europe {
+    left: 30vw;
+    top: 25vh;
+
+    width: 15vw;
+    height: 15vw;
+
+    background-color: lightblue;
+}
+
+.map__bubble.NearEast {
+    left: 55vw;
+    top: 45vh;
+
+    width: 20vw;
+    height: 20vw;
+
+    background-color: lightgoldenrodyellow;
+}
+
+.map__bubble.SouthAsia {
+    left: 55vw;
+    top: 45vh;
+
+    width: 20vw;
+    height: 20vw;
+
+    background-color: lightsalmon;
+}
+
+.map__bubble.SoutheastAsia {
+    left: 60vw;
+    top: 47vh;
+
+    width: 17vw;
+    height: 17vw;
+
+    background-color: lightsalmon;
+}
+
+.map__bubble.NorthAsia {
+    left: 75vw;
+    top: 30vh;
+
+    width: 17vw;
+    height: 17vw;
+
+    background-color: lightgray;
+}
+
+.map__bubble.Russia {
+    left: 45vw;
+    top: 2vh;
+
+    width: 15vw;
+    height: 15vw;
+
+    background-color: lightblue;
+}
+
+.map__bubble.Australia {
+    left: 57vw;
+    top: 50vh;
+
+    width: 23vw;
+    height: 23vw;
+
+    background-color: lightcoral;
+}
+
+.map__bubble.NorthAmerica {
+    left: 2vw;
+    top: 28vh;
+
+    width: 20vw;
+    height: 20vw;
+
+    background-color: lightblue;
+}
+
+.map__bubble.Greenland {
+    left: 35vw;
+    top: 2vh;
+
+    width: 12vw;
+    height: 12vw;
+
+    background-color: lightblue;
+}

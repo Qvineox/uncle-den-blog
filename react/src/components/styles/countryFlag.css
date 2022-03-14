@@ -1,0 +1,52 @@
+.country__flag__wrapper {
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    width: 12vw;
+    height: 9vw;
+
+    margin: 1em;
+}
+
+h2.country__name {
+    position: absolute;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    opacity: 0;
+    color: whitesmoke;
+
+    font-size: 2.5em;
+    text-align: center;
+
+    width: 12vw;
+    z-index: 2;
+
+    transition: 0.5s ease-in-out;
+}
+
+.country__flag {
+    width: 100%;
+    height: 100%;
+
+    box-shadow: 5px 5px 10px 5px rgba(0, 0, 0, 0.2);
+
+    transition: 0.5s ease;
+
+    cursor: pointer;
+
+    z-index: 1;
+}
+
+.country__flag__wrapper:hover > .country__flag {
+    filter: brightness(25%);
+    transform: scale(1.1)
+}
+
+.country__flag__wrapper:hover > .country__name {
+    opacity: 1
+}

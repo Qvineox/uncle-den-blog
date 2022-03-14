@@ -1,0 +1,57 @@
+.menu {
+    position: fixed;
+    right: 7vw;
+    bottom: 15vh;
+
+}
+
+.menu-bubble {
+    height: 100px;
+    width: 100px;
+
+    position: absolute;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+}
+
+.menu-bubble img {
+    height: 65px;
+
+    padding: 18px;
+    background-color: whitesmoke;
+    border-radius: 50%;
+
+    display: flex;
+    cursor: pointer;
+}
+
+.menu-bubble:first-child img {
+    box-shadow: 1px 1px 10px 3px rgba(0, 0, 0, 0.2);
+}
+
+.menu-bubble-top {
+    z-index: 0;
+}
+
+.menu-bubble-posts {
+    z-index: -1;
+}
+
+.menu-bubble-map {
+    z-index: -2;
+}
+
+.menu-bubble-account {
+    z-index: -3;
+}
+
+.menu-bubble-admin {
+    z-index: -4;
+}
+
+.menu-bubble-admin img {
+    background-color: lightblue;
+}

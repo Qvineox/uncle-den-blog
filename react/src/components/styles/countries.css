@@ -1,0 +1,41 @@
+h1, h2 {
+    cursor: default;
+}
+
+h2.countries__block__header {
+    font-size: 2.5em;
+}
+
+.region__wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: start;
+
+    margin: 2em 2em 7em 12em;
+}
+
+.region__title {
+    position: absolute;
+
+    transform-origin: 0 0;
+    transform: rotate(90deg);
+
+    color: whitesmoke;
+    font-size: 2.5em;
+
+    letter-spacing: 0.2em;
+    line-height: 1.1em;
+
+    text-transform: uppercase;
+}
+
+.region__flags__wrapper {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+
+    align-items: center;
+    justify-content: flex-start;
+}
+
+

@@ -1,0 +1,196 @@
+{
+  "map": {
+    "offsets": [
+      0.2,
+      0.3,
+      0.5,
+      0.74
+    ],
+    "positions": [
+      {
+        "lat": 52.971134,
+        "lng": -9.428664
+      },
+      {
+        "lat": 57.971134,
+        "lng": -4.428664
+      },
+      {
+        "lat": 50.110395,
+        "lng": 8.682109
+      },
+      {
+        "lat": 48.1434880,
+        "lng": 17.10837
+      }
+    ]
+  },
+  "blocks": [
+    {
+      "order": 0,
+      "type": "text",
+      "content": {
+        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus mattis fermentum pulvinar. Vestibulum pretium placerat dapibus. Etiam mollis lacinia maximus. Duis tellus odio, tincidunt non erat id, fermentum fermentum nisl. Praesent leo leo, lacinia eu sapien id, auctor congue enim. Integer euismod facilisis tortor at efficitur. Pellentesque in nisi laoreet, tempus ex sit amet, euismod dui. Sed augue sapien, egestas in semper in, vulputate sed quam. Etiam id nulla dapibus, auctor ligula in, luctus metus.\n\nClass aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Duis sed pretium enim. Vivamus sit amet risus commodo, ornare orci sit amet, vestibulum tortor. Donec mauris orci, rutrum vitae lectus nec, tincidunt accumsan mauris. Vivamus eu mi eu lacus pretium viverra. Morbi mattis condimentum nulla. Suspendisse eu fermentum diam, a rutrum orci. Nullam vel tortor cursus, faucibus arcu vitae, sagittis massa. Vestibulum a ultrices tortor. Pellentesque faucibus mi vitae nisi luctus, id euismod magna rutrum. Nam pulvinar in diam a sagittis. Morbi non sollicitudin mauris."
+      }
+    },
+    {
+      "order": 1,
+      "type": "map",
+      "content": {
+        "zoom": 5,
+        "center": {
+          "lat": 52.971134,
+          "lng": -9.428664
+        },
+        "markers": [
+          {
+            "image": "/assets/images/600x200-placeholder.png",
+            "title": "Location #1",
+            "visible": true,
+            "position": {
+              "lat": 52.971134,
+              "lng": -9.428664
+            },
+            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+          },
+          {
+            "image": "/assets/images/600x200-placeholder.png",
+            "title": "Location #2",
+            "visible": true,
+            "position": {
+              "lat": 51.51567,
+              "lng": -0.13213
+            },
+            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+          }
+        ]
+      }
+    },
+    {
+      "order": 2,
+      "type": "image",
+      "content": {
+        "image": "/assets/images/800x400-placeholder.png",
+        "inverted": true,
+        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus mattis fermentum pulvinar. Vestibulum pretium placerat dapibus. Etiam mollis lacinia maximus. Duis tellus odio, tincidunt non erat id, fermentum fermentum nisl. Praesent leo leo, lacinia eu sapien id, auctor congue enim. Integer euismod facilisis tortor at efficitur. Pellentesque in nisi laoreet, tempus ex sit amet, euismod dui. Sed augue sapien, egestas in semper in, vulputate sed quam. Etiam id nulla dapibus, auctor ligula in, luctus metus."
+      }
+    },
+    {
+      "order": 3,
+      "type": "carousel",
+      "content": {
+        "carouselItems": [
+          {
+            "image": "/assets/images/1600x600-placeholder.png",
+            "title": "Carousel Placeholder #1",
+            "interval": 5000,
+            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+          },
+          {
+            "image": "/assets/images/1600x600-placeholder.png",
+            "title": "Carousel Placeholder #2",
+            "interval": 5000,
+            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+          },
+          {
+            "image": "/assets/images/1600x600-placeholder.png",
+            "title": "Carousel Placeholder #3",
+            "interval": 5000,
+            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+          }
+        ]
+      }
+    },
+    {
+      "order": 4,
+      "type": "image",
+      "content": {
+        "image": "/assets/images/500x500-placeholder.png",
+        "inverted": false,
+        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus mattis fermentum pulvinar. Vestibulum pretium placerat dapibus. Etiam mollis lacinia maximus. Duis tellus odio, tincidunt non erat id, fermentum fermentum nisl. Praesent leo leo, lacinia eu sapien id, auctor congue enim. Integer euismod facilisis tortor at efficitur. Pellentesque in nisi laoreet, tempus ex sit amet, euismod dui. Sed augue sapien, egestas in semper in, vulputate sed quam. Etiam id nulla dapibus, auctor ligula in, luctus metus."
+      }
+    },
+    {
+      "order": 5,
+      "type": "accordion",
+      "content": {
+        "accordionItems": [
+          {
+            "title": "Accordion Title #1",
+            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+          },
+          {
+            "title": "Accordion Title #2",
+            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+          },
+          {
+            "title": "Accordion Title #3",
+            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+          }
+        ]
+      }
+    },
+    {
+      "order": 6,
+      "type": "image",
+      "content": {
+        "image": "/assets/images/800x400-placeholder.png",
+        "inverted": true,
+        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus mattis fermentum pulvinar. Vestibulum pretium placerat dapibus. Etiam mollis lacinia maximus. Duis tellus odio, tincidunt non erat id, fermentum fermentum nisl. Praesent leo leo, lacinia eu sapien id, auctor congue enim. Integer euismod facilisis tortor at efficitur. Pellentesque in nisi laoreet, tempus ex sit amet, euismod dui. Sed augue sapien, egestas in semper in, vulputate sed quam. Etiam id nulla dapibus, auctor ligula in, luctus metus."
+      }
+    },
+    {
+      "order": 7,
+      "type": "map-helper",
+      "content": {
+        "zoom": 7,
+        "markers": [
+          {
+            "title": "Location #1",
+            "visible": true,
+            "position": {
+              "lat": 52.971134,
+              "lng": -9.428664
+            },
+            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris ut lacus feugiat, consequat odio eu, tempus augue. Nullam at lacus est. Ut ante sem, elementum consequat nisi a, lobortis iaculis dolor. "
+          },
+          {
+            "title": "Location #2",
+            "visible": true,
+            "position": {
+              "lat": 52.53332,
+              "lng": -1.89327
+            },
+            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris ut lacus feugiat, consequat odio eu, tempus augue. Nullam at lacus est. Ut ante sem, elementum consequat nisi a, lobortis iaculis dolor. "
+          },
+          {
+            "title": "Location #3",
+            "visible": true,
+            "position": {
+              "lat": 52.61629,
+              "lng": 15.15442
+            },
+            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris ut lacus feugiat, consequat odio eu, tempus augue. Nullam at lacus est. Ut ante sem, elementum consequat nisi a, lobortis iaculis dolor. "
+          }
+        ]
+      }
+    },
+    {
+      "order": 8,
+      "type": "text",
+      "content": {
+        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus mattis fermentum pulvinar. Vestibulum pretium placerat dapibus. Etiam mollis lacinia maximus. Duis tellus odio, tincidunt non erat id, fermentum fermentum nisl. Praesent leo leo, lacinia eu sapien id, auctor congue enim. Integer euismod facilisis tortor at efficitur. Pellentesque in nisi laoreet, tempus ex sit amet, euismod dui. Sed augue sapien, egestas in semper in, vulputate sed quam. Etiam id nulla dapibus, auctor ligula in, luctus metus.\n\nClass aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Duis sed pretium enim. Vivamus sit amet risus commodo, ornare orci sit amet, vestibulum tortor. Donec mauris orci, rutrum vitae lectus nec, tincidunt accumsan mauris. Vivamus eu mi eu lacus pretium viverra. Morbi mattis condimentum nulla. Suspendisse eu fermentum diam, a rutrum orci. Nullam vel tortor cursus, faucibus arcu vitae, sagittis massa. Vestibulum a ultrices tortor. Pellentesque faucibus mi vitae nisi luctus, id euismod magna rutrum. Nam pulvinar in diam a sagittis. Morbi non sollicitudin mauris."
+      }
+    },
+    {
+      "order": 9,
+      "type": "link",
+      "content": {
+        "link": "#",
+        "image": "/assets/images/600x200-placeholder.png",
+        "title": "Sample title",
+        "description": "Sample description"
+      }
+    }
+  ]
+}

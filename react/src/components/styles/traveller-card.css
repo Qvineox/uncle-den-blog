@@ -1,0 +1,45 @@
+.traveller__card__single {
+    width: 300px;
+    height: 500px;
+
+    margin: 0.5em;
+}
+
+.traveller__card__double {
+    width: 600px;
+    height: 500px;
+
+    margin: 0.5em;
+}
+
+.traveller__card img {
+    height: 100%;
+}
+
+.traveller__card__info {
+    position: absolute;
+
+    display: flex;
+    flex-direction: column;
+
+    width: inherit;
+    height: inherit;
+
+    padding: 1em;
+    opacity: 0;
+
+    background-color: whitesmoke;
+    box-shadow: -5px 5px 5px #29323c;
+}
+
+.traveller__card__info__name {
+    display: flex;
+    align-self: start;
+
+    font-size: 2em;
+}
+
+.traveller__card__info__profile {
+    margin-top: 0.6em;
+    font-size: 1.1em;
+}
