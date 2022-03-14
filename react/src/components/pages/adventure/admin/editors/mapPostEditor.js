@@ -10,17 +10,22 @@ export function MapPostEditor({id, content, show, setShow, refreshData}) {
 
     const addMarkerItem = () => {
         setFormData(values => ({
-            ...values,
-            markers: [
-                ...values.markers,
-                {
-                    title: 'Новый заголовок.',
-                    description: 'Новое описание.',
-                    position: {lat: 0, lng: 0},
-                    visible: true,
-                    image: '/assets/images/600x200-placeholder.png'
-                }
-            ]
+            ...values, markers: [...values.markers, {
+                title: 'Новый заголовок.',
+                description: 'Новое описание.',
+                position: {lat: 0, lng: 0},
+                visible: true,
+                image: '/assets/images/600x200-placeholder.png'
+            }]
+        }))
+    }
+
+    const removeMarkerItem = (index) => {
+        let items = formData.markers
+        items.splice(index, 1)
+
+        setFormData(values => ({
+            ...values, markers: items
         }))
     }
 
@@ -31,11 +36,8 @@ export function MapPostEditor({id, content, show, setShow, refreshData}) {
     const handleSubmit = (evt) => {
         if (id) {
             let data = {
-                ...formData,
-                zoom: parseInt(formData.zoom),
-                center: {
-                    lat: parseFloat(formData.center.lat).toFixed(5),
-                    lng: parseFloat(formData.center.lng).toFixed(5),
+                ...formData, zoom: parseInt(formData.zoom), center: {
+                    lat: parseFloat(formData.center.lat).toFixed(5), lng: parseFloat(formData.center.lng).toFixed(5),
                 }
             }
 
@@ -52,11 +54,9 @@ export function MapPostEditor({id, content, show, setShow, refreshData}) {
         const value = evt.target.value;
 
         if (value <= 10 && value >= 1) {
-            setFormData(values => (
-                {
-                    ...values,
-                    zoom: value
-                }))
+            setFormData(values => ({
+                ...values, zoom: value
+            }))
         }
     }
 
@@ -66,25 +66,19 @@ export function MapPostEditor({id, content, show, setShow, refreshData}) {
 
         if (name === 'latitude') {
             if (value <= 90 && value >= -90) {
-                setFormData(values => (
-                    {
-                        ...values,
-                        center: {
-                            lat: value,
-                            lng: values.center.lng
-                        }
-                    }))
+                setFormData(values => ({
+                    ...values, center: {
+                        lat: value, lng: values.center.lng
+                    }
+                }))
             }
         } else if (name === 'longitude') {
             if (value <= 180 && value >= -180) {
-                setFormData(values => (
-                    {
-                        ...values,
-                        center: {
-                            lat: values.center.lat,
-                            lng: value
-                        }
-                    }))
+                setFormData(values => ({
+                    ...values, center: {
+                        lat: values.center.lat, lng: value
+                    }
+                }))
             }
         }
 
@@ -138,46 +132,44 @@ export function MapPostEditor({id, content, show, setShow, refreshData}) {
 
                 <Card className={'post-editor__card-items'}>
                     <Card.Header>Компоненты карты</Card.Header>
-                    {formData.markers.length > 0 ?
-                        <ListGroup variant="flush">
-                            {formData.markers.map((marker, i) => {
-                                return (
-                                    <Fragment key={i}>
-                                        {/* TODO: Add edit and delete buttons (icons) */}
-                                        <ListGroup.Item className={'post-editor__card-items__marker'}
-                                                        onClick={() => setSelectedItem(i)}>
-                                            <Row>
-                                                <Col md={8}>
-                                                    <h5 className={'post-editor__card-items__marker__title'}>
-                                                        {marker.title}
-                                                    </h5>
-                                                </Col>
-                                            </Row>
-                                            <Row>
-                                                <Col>
-                                                    <div className={'post-editor__card-items__marker__details'}>
-                                                        {marker.position.lat}, {marker.position.lng}
-                                                    </div>
-                                                </Col>
-                                            </Row>
-                                            <Row>
-                                                <Col>
-                                                    <div className={'post-editor__card-items__marker__description'}>
-                                                        {marker.description}
-                                                    </div>
-                                                </Col>
-                                            </Row>
-                                        </ListGroup.Item>
-                                    </Fragment>
-                                )
-                            })
-                            }
-                        </ListGroup>
-                        :
-                        <Card.Body className="text-center">
-                            <Card.Title>Пусто</Card.Title>
-                        </Card.Body>
-                    }
+                    {formData.markers.length > 0 ? <ListGroup variant="flush">
+                        {formData.markers.map((marker, i) => {
+                            return (<Fragment key={i}>
+                                {/* TODO: Add edit and delete buttons (icons) */}
+                                <ListGroup.Item className={'post-editor__card-items__marker'}>
+                                    <Row>
+                                        <Col md={10}>
+                                            <h5 className={'post-editor__card-items__marker__title'}>
+                                                {marker.title}
+                                            </h5>
+                                        </Col>
+                                        <Col md={2} className={'post-editor__card-items__marker-manage'}>
+                                            <img alt={'edit'} onClick={() => setSelectedItem(i)}
+                                                 src={process.env.PUBLIC_URL + '/assets/icons/edit.svg'}/>
+                                            <img alt={'edit'} onClick={() => removeMarkerItem(i)}
+                                                 src={process.env.PUBLIC_URL + '/assets/icons/delete.svg'}/>
+                                        </Col>
+                                    </Row>
+                                    <Row>
+                                        <Col>
+                                            <div className={'post-editor__card-items__marker__details'}>
+                                                {marker.position.lat}, {marker.position.lng}
+                                            </div>
+                                        </Col>
+                                    </Row>
+                                    <Row>
+                                        <Col>
+                                            <div className={'post-editor__card-items__marker__description'}>
+                                                {marker.description}
+                                            </div>
+                                        </Col>
+                                    </Row>
+                                </ListGroup.Item>
+                            </Fragment>)
+                        })}
+                    </ListGroup> : <Card.Body className="text-center">
+                        <Card.Title>Пусто</Card.Title>
+                    </Card.Body>}
                     <Card.Footer>
                         <div className={"flex-center"}>
                             <Button onClick={addMarkerItem} variant="outline-success">Добавить маркер</Button>
@@ -218,11 +210,9 @@ export const MapPostMarkerEditor = ({formData, setFormData, selectedItem, setSel
         const name = evt.target.name;
         const value = evt.target.value;
 
-        setItemData(values => (
-            {
-                ...values,
-                [name]: value
-            }))
+        setItemData(values => ({
+            ...values, [name]: value
+        }))
     }
 
     const handleCoordinates = (evt) => {
@@ -231,25 +221,19 @@ export const MapPostMarkerEditor = ({formData, setFormData, selectedItem, setSel
 
         if (name === 'latitude') {
             if (value <= 90 && value >= -90) {
-                setItemData(values => (
-                    {
-                        ...values,
-                        position: {
-                            lat: value,
-                            lng: values.position.lng
-                        }
-                    }))
+                setItemData(values => ({
+                    ...values, position: {
+                        lat: value, lng: values.position.lng
+                    }
+                }))
             }
         } else if (name === 'longitude') {
             if (value <= 180 && value >= -180) {
-                setItemData(values => (
-                    {
-                        ...values,
-                        position: {
-                            lat: values.position.lat,
-                            lng: value
-                        }
-                    }))
+                setItemData(values => ({
+                    ...values, position: {
+                        lat: values.position.lat, lng: value
+                    }
+                }))
             }
         }
 
@@ -263,60 +247,52 @@ export const MapPostMarkerEditor = ({formData, setFormData, selectedItem, setSel
         let items = formData.markers
 
         items[selectedItem] = {
-            title: itemData.title,
-            description: itemData.description,
-            position: {
-                lat: parseFloat(itemData.position.lat).toFixed(5),
-                lng: parseFloat(itemData.position.lng).toFixed(5),
+            title: itemData.title, description: itemData.description, position: {
+                lat: parseFloat(itemData.position.lat).toFixed(5), lng: parseFloat(itemData.position.lng).toFixed(5),
             }
         }
 
-        setFormData(values => (
-            {
-                ...values,
-                markers: items
-            }
-        ))
+        setFormData(values => ({
+            ...values, markers: items
+        }))
 
         handleClose()
     }
 
     // TODO: fix form for new marker addition
-    return (
-        <Modal show={show} onHide={handleClose}>
-            <Modal.Header closeButton>
-                <Modal.Title>Изменение записи</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                <Form.Group className={"form-group"}>
-                    <Form.Label>Заголовок</Form.Label>
-                    <Form.Control onChange={handleChange} name={"title"} type={'text'}
-                                  value={itemData?.title}/>
-                </Form.Group>
-                <Form.Group className={"form-group"}>
-                    <Form.Label>Описание</Form.Label>
-                    <Form.Control onChange={handleChange} name={"description"} rows={3} as={'textarea'}
-                                  value={itemData?.description}/>
-                </Form.Group>
+    return (<Modal show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+            <Modal.Title>Изменение записи</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+            <Form.Group className={"form-group"}>
+                <Form.Label>Заголовок</Form.Label>
+                <Form.Control onChange={handleChange} name={"title"} type={'text'}
+                              value={itemData?.title}/>
+            </Form.Group>
+            <Form.Group className={"form-group"}>
+                <Form.Label>Описание</Form.Label>
+                <Form.Control onChange={handleChange} name={"description"} rows={3} as={'textarea'}
+                              value={itemData?.description}/>
+            </Form.Group>
 
-                <Form.Group className={"form-group"}>
-                    <Form.Label>Широта</Form.Label>
-                    <Form.Control onChange={handleCoordinates} name={"latitude"} type={'float'}
-                                  value={itemData?.position.lat}/>
-                    <Form.Label>Долгота</Form.Label>
-                    <Form.Control onChange={handleCoordinates} name={"longitude"} type={'float'}
-                                  value={itemData?.position.lng}/>
-                </Form.Group>
+            <Form.Group className={"form-group"}>
+                <Form.Label>Широта</Form.Label>
+                <Form.Control onChange={handleCoordinates} name={"latitude"} type={'float'}
+                              value={itemData?.position.lat}/>
+                <Form.Label>Долгота</Form.Label>
+                <Form.Control onChange={handleCoordinates} name={"longitude"} type={'float'}
+                              value={itemData?.position.lng}/>
+            </Form.Group>
 
-            </Modal.Body>
-            <Modal.Footer>
-                <Button variant="secondary" onClick={handleClose}>
-                    Закрыть
-                </Button>
-                <Button variant="primary" onClick={handleSubmit}>
-                    Сохранить изменения
-                </Button>
-            </Modal.Footer>
-        </Modal>
-    )
+        </Modal.Body>
+        <Modal.Footer>
+            <Button variant="secondary" onClick={handleClose}>
+                Закрыть
+            </Button>
+            <Button variant="primary" onClick={handleSubmit}>
+                Сохранить изменения
+            </Button>
+        </Modal.Footer>
+    </Modal>)
 }
