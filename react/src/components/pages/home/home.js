@@ -24,7 +24,7 @@ export default function Home() {
 
     return (
         <Fragment>
-            <Suspense fallback={<div>Loading... </div>}>
+            <Suspense fallback={<div>Loading...</div>}>
                 <WorldMap visibility={mapVisibility}/>
             </Suspense>
 
