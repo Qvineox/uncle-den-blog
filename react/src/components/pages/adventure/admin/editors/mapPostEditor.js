@@ -2,6 +2,8 @@ import {Fragment, useEffect, useState} from "react";
 import {createPost, updatePost} from "../scripts/postHandlers";
 import {Button, Card, Col, Form, ListGroup, Modal, Offcanvas, Row} from "react-bootstrap";
 
+import '../../styles/admin/editors.scss'
+
 export function MapPostEditor({id, content, show, setShow, refreshData}) {
     const [formData, setFormData] = useState(content)
     const [selectedItem, setSelectedItem] = useState(null)
@@ -28,7 +30,16 @@ export function MapPostEditor({id, content, show, setShow, refreshData}) {
 
     const handleSubmit = (evt) => {
         if (id) {
-            updatePost(id, formData)
+            let data = {
+                ...formData,
+                zoom: parseInt(formData.zoom),
+                center: {
+                    lat: parseFloat(formData.center.lat).toFixed(5),
+                    lng: parseFloat(formData.center.lng).toFixed(5),
+                }
+            }
+
+            updatePost(id, data)
         } else {
             createPost('map', formData)
         }
@@ -37,20 +48,95 @@ export function MapPostEditor({id, content, show, setShow, refreshData}) {
         evt.preventDefault()
     }
 
+    const handleZoom = (evt) => {
+        const value = evt.target.value;
+
+        if (value <= 10 && value >= 1) {
+            setFormData(values => (
+                {
+                    ...values,
+                    zoom: value
+                }))
+        }
+    }
+
+    const handleCoordinates = (evt) => {
+        const name = evt.target.name;
+        const value = evt.target.value;
+
+        if (name === 'latitude') {
+            if (value <= 90 && value >= -90) {
+                setFormData(values => (
+                    {
+                        ...values,
+                        center: {
+                            lat: value,
+                            lng: values.center.lng
+                        }
+                    }))
+            }
+        } else if (name === 'longitude') {
+            if (value <= 180 && value >= -180) {
+                setFormData(values => (
+                    {
+                        ...values,
+                        center: {
+                            lat: values.center.lat,
+                            lng: value
+                        }
+                    }))
+            }
+        }
+
+    }
+
     const handleClose = () => {
         setShow(false)
     }
 
     return (<Fragment>
-        <Offcanvas show={show} onHide={handleClose}>
+        <Offcanvas show={show} onHide={handleClose} className={'post-editor'}>
             <Offcanvas.Header closeButton>
-                <Offcanvas.Title>Редактировать</Offcanvas.Title>
+                <Offcanvas.Title className={'post-editor__title'}>Редактировать</Offcanvas.Title>
             </Offcanvas.Header>
             <Offcanvas.Body>
                 <MapPostMarkerEditor formData={formData} setFormData={setFormData} selectedItem={selectedItem}
                                      setSelectedItem={setSelectedItem}/>
 
-                <Card style={{width: '100%', marginTop: '2vh'}}>
+                <Form.Group className={'post-editor__form'}>
+                    <Form.Label className={'post-editor__form__label'}>Центр</Form.Label>
+
+
+                    {/* TODO: add .success .error .warning class modifications */}
+                    <div className="post-editor__form_coordinates">
+                        <Form.Label className={'post-editor__form_coordinates__label'}>Широта</Form.Label>
+                        <Form.Control className={'post-editor__form_coordinates__input'}
+                                      onChange={handleCoordinates}
+                                      name={"latitude"} type={'float'}
+                                      value={formData.center.lat}/>
+
+                        <Form.Label className={'post-editor__form_coordinates__label'}>Долгота</Form.Label>
+                        <Form.Control className={'post-editor__form_coordinates__input'}
+                                      onChange={handleCoordinates}
+                                      name={"longitude"} type={'float'}
+                                      value={formData.center.lng}/>
+                    </div>
+                </Form.Group>
+
+                <Form.Group className={'post-editor__form'}>
+                    <Form.Label className={'post-editor__form__label'}>Приближение</Form.Label>
+
+                    <Form.Control className={'post-editor__form_number'} onChange={handleZoom}
+                                  name={"zoom"} type={'number'}
+                                  value={formData.zoom}/>
+
+                    {/* TODO: add .success .error .warning class modifications */}
+                    <Form.Text className='post-editor__form__hint'>
+                        Рекомендуется значение от 3 до 7.
+                    </Form.Text>
+                </Form.Group>
+
+                <Card className={'post-editor__card-items'}>
                     <Card.Header>Компоненты карты</Card.Header>
                     {formData.markers.length > 0 ?
                         <ListGroup variant="flush">
@@ -58,15 +144,25 @@ export function MapPostEditor({id, content, show, setShow, refreshData}) {
                                 return (
                                     <Fragment key={i}>
                                         {/* TODO: Add edit and delete buttons (icons) */}
-                                        <ListGroup.Item onClick={() => setSelectedItem(i)}>
+                                        <ListGroup.Item className={'post-editor__card-items__marker'}
+                                                        onClick={() => setSelectedItem(i)}>
                                             <Row>
                                                 <Col md={8}>
-                                                    <h5>{marker.title}</h5>
+                                                    <h5 className={'post-editor__card-items__marker__title'}>
+                                                        {marker.title}
+                                                    </h5>
                                                 </Col>
                                             </Row>
                                             <Row>
                                                 <Col>
-                                                    <div style={{maxHeight: '20vh', overflowY: 'visible'}}>
+                                                    <div className={'post-editor__card-items__marker__details'}>
+                                                        {marker.position.lat}, {marker.position.lng}
+                                                    </div>
+                                                </Col>
+                                            </Row>
+                                            <Row>
+                                                <Col>
+                                                    <div className={'post-editor__card-items__marker__description'}>
                                                         {marker.description}
                                                     </div>
                                                 </Col>
@@ -84,16 +180,20 @@ export function MapPostEditor({id, content, show, setShow, refreshData}) {
                     }
                     <Card.Footer>
                         <div className={"flex-center"}>
-                            <Button onClick={addMarkerItem} variant="outline-success">Добавить</Button>
+                            <Button onClick={addMarkerItem} variant="outline-success">Добавить маркер</Button>
                         </div>
                     </Card.Footer>
                 </Card>
-                <div className="add-block-buttons__wrapper">
-                    <Button onClick={handleSubmit} variant={"success"} className={"add-block-button"}>
-                        Сохранить пост
-                    </Button>
-                    <Button onClick={handleReset} variant={"danger"} className={"add-block-button"}>
+
+                <hr className="post-editor__separator"/>
+                <div className="post-editor__button-wrapper">
+                    <Button variant="secondary" onClick={handleReset}>
                         Отменить
+                    </Button>
+
+                    {/* TODO: add disable function */}
+                    <Button variant="primary" onClick={handleSubmit}>
+                        Сохранить изменения
                     </Button>
                 </div>
             </Offcanvas.Body>
@@ -125,7 +225,6 @@ export const MapPostMarkerEditor = ({formData, setFormData, selectedItem, setSel
             }))
     }
 
-    // TODO: error handling, accuracy check
     const handleCoordinates = (evt) => {
         const name = evt.target.name;
         const value = evt.target.value;
