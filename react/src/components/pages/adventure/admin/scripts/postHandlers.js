@@ -13,7 +13,9 @@ function deletePost(id) {
         })
     }).catch((err) => {
         console.error(err)
-    })
+    }).then(response => {
+        return response.json()
+    }).then(data => console.debug(data))
 }
 
 function updatePost(id, newContent) {
@@ -32,7 +34,9 @@ function updatePost(id, newContent) {
         })
     }).catch((err) => {
         console.error(err)
-    })
+    }).then(response => {
+        return response.json()
+    }).then(data => console.debug(data))
 }
 
 function createPost(type, content, articleId) {
@@ -54,7 +58,9 @@ function createPost(type, content, articleId) {
         })
     }).catch((err) => {
         console.error(err)
-    })
+    }).then(response => {
+        return response.json()
+    }).then(data => console.debug(data))
 }
 
 module.exports = {

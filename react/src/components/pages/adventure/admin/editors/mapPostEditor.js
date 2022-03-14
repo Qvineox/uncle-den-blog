@@ -2,7 +2,7 @@ import {Fragment, useEffect, useState} from "react";
 import {createPost, updatePost} from "../scripts/postHandlers";
 import {Button, Card, Col, Form, ListGroup, Modal, Offcanvas, Row} from "react-bootstrap";
 
-export default function MapPostEditor({id, content, show, setShow, refreshData}) {
+export function MapPostEditor({id, content, show, setShow, refreshData}) {
     const [formData, setFormData] = useState(content)
     const [selectedItem, setSelectedItem] = useState(null)
 
@@ -15,7 +15,7 @@ export default function MapPostEditor({id, content, show, setShow, refreshData})
                     title: 'Новый заголовок.',
                     description: 'Новое описание.',
                     position: {lat: 0, lng: 0},
-                    visibility: true,
+                    visible: true,
                     image: '/assets/images/600x200-placeholder.png'
                 }
             ]
@@ -101,7 +101,7 @@ export default function MapPostEditor({id, content, show, setShow, refreshData})
     </Fragment>)
 }
 
-const MapPostMarkerEditor = ({formData, setFormData, selectedItem, setSelectedItem}) => {
+export const MapPostMarkerEditor = ({formData, setFormData, selectedItem, setSelectedItem}) => {
     const [show, setShow] = useState(false)
     const [itemData, setItemData] = useState(null)
 
@@ -125,6 +125,37 @@ const MapPostMarkerEditor = ({formData, setFormData, selectedItem, setSelectedIt
             }))
     }
 
+    // TODO: error handling, accuracy check
+    const handleCoordinates = (evt) => {
+        const name = evt.target.name;
+        const value = evt.target.value;
+
+        if (name === 'latitude') {
+            if (value <= 90 && value >= -90) {
+                setItemData(values => (
+                    {
+                        ...values,
+                        position: {
+                            lat: value,
+                            lng: values.position.lng
+                        }
+                    }))
+            }
+        } else if (name === 'longitude') {
+            if (value <= 180 && value >= -180) {
+                setItemData(values => (
+                    {
+                        ...values,
+                        position: {
+                            lat: values.position.lat,
+                            lng: value
+                        }
+                    }))
+            }
+        }
+
+    }
+
     const handleClose = () => {
         setSelectedItem(null)
     }
@@ -132,7 +163,14 @@ const MapPostMarkerEditor = ({formData, setFormData, selectedItem, setSelectedIt
     const handleSubmit = () => {
         let items = formData.markers
 
-        items[selectedItem] = itemData
+        items[selectedItem] = {
+            title: itemData.title,
+            description: itemData.description,
+            position: {
+                lat: parseFloat(itemData.position.lat).toFixed(5),
+                lng: parseFloat(itemData.position.lng).toFixed(5),
+            }
+        }
 
         setFormData(values => (
             {
@@ -161,6 +199,16 @@ const MapPostMarkerEditor = ({formData, setFormData, selectedItem, setSelectedIt
                     <Form.Control onChange={handleChange} name={"description"} rows={3} as={'textarea'}
                                   value={itemData?.description}/>
                 </Form.Group>
+
+                <Form.Group className={"form-group"}>
+                    <Form.Label>Широта</Form.Label>
+                    <Form.Control onChange={handleCoordinates} name={"latitude"} type={'float'}
+                                  value={itemData?.position.lat}/>
+                    <Form.Label>Долгота</Form.Label>
+                    <Form.Control onChange={handleCoordinates} name={"longitude"} type={'float'}
+                                  value={itemData?.position.lng}/>
+                </Form.Group>
+
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="secondary" onClick={handleClose}>

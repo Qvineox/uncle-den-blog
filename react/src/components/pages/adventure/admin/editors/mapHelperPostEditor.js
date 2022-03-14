@@ -1,5 +1,6 @@
-import {Fragment, useEffect, useState} from "react";
+import {Fragment, useState} from "react";
 import {createPost, updatePost} from "../scripts/postHandlers";
+import {MapPostMarkerEditor} from "./mapPostEditor"
 import {Button, Card, Col, Form, ListGroup, Modal, Offcanvas, Row} from "react-bootstrap";
 
 export default function MapHelperPostEditor({id, content, show, setShow, refreshData}) {
@@ -98,77 +99,4 @@ export default function MapHelperPostEditor({id, content, show, setShow, refresh
             </Offcanvas.Body>
         </Offcanvas>
     </Fragment>)
-}
-
-const MapPostMarkerEditor = ({formData, setFormData, selectedItem, setSelectedItem}) => {
-    const [show, setShow] = useState(false)
-    const [itemData, setItemData] = useState(null)
-
-    useEffect(() => {
-        if (selectedItem !== null) {
-            setItemData(formData.markers[selectedItem])
-            setShow(true)
-        } else {
-            setShow(false)
-        }
-    }, [selectedItem])
-
-    const handleChange = (evt) => {
-        const name = evt.target.name;
-        const value = evt.target.value;
-
-        setItemData(values => (
-            {
-                ...values,
-                [name]: value
-            }))
-    }
-
-    const handleClose = () => {
-        setSelectedItem(null)
-    }
-
-    const handleSubmit = () => {
-        let items = formData.markers
-
-        items[selectedItem] = itemData
-
-        setFormData(values => (
-            {
-                ...values,
-                markers: items
-            }
-        ))
-
-        handleClose()
-    }
-
-    // TODO: fix form for new marker addition
-    return (
-        <Modal show={show} onHide={handleClose}>
-            <Modal.Header closeButton>
-                <Modal.Title>Изменение записи</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                <Form.Group className={"form-group"}>
-                    <Form.Label>Заголовок</Form.Label>
-                    <Form.Control onChange={handleChange} name={"title"} type={'text'}
-                                  value={itemData?.title}/>
-                </Form.Group>
-                <Form.Group className={"form-group"}>
-                    <Form.Label>Описание</Form.Label>
-                    <Form.Control onChange={handleChange} name={"description"} rows={3} as={'textarea'}
-                                  value={itemData?.description}/>
-                </Form.Group>
-            </Modal.Body>
-            <Modal.Footer>
-                <Button variant="secondary" onClick={handleClose}>
-                    Закрыть
-                </Button>
-                <Button variant="primary" onClick={handleSubmit}>
-                    Сохранить изменения
-                </Button>
-            </Modal.Footer>
-        </Modal>
-    )
 }

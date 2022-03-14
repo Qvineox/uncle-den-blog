@@ -6,7 +6,7 @@ import TextPostEditor from "./admin/editors/textPostEditor";
 import {deletePost} from "./admin/scripts/postHandlers";
 import AccordionPostEditor from "./admin/editors/accordionPostEditor";
 import CarouselPostEditor from "./admin/editors/carouselPostEditor";
-import MapPostEditor from "./admin/editors/mapPostEditor";
+import {MapPostEditor} from "./admin/editors/mapPostEditor";
 import LinkPostEditor from "./admin/editors/linkPostEditor";
 import MapHelperPostEditor from "./admin/editors/mapHelperPostEditor";
 

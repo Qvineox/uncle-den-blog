@@ -39,63 +39,64 @@ export default function CarouselPostEditor({id, content, show, setShow, refreshD
         setShow(false)
     }
 
-    return (<Fragment>
-        <Offcanvas show={show} onHide={handleClose}>
-            <Offcanvas.Header closeButton>
-                <Offcanvas.Title>Редактировать</Offcanvas.Title>
-            </Offcanvas.Header>
-            <Offcanvas.Body>
-                <CarouselPostItemEditor formData={formData} setFormData={setFormData} selectedItem={selectedItem}
-                                        setSelectedItem={setSelectedItem}/>
-                <Card style={{width: '100%', marginTop: '2vh'}}>
-                    <Card.Header>Компоненты карусели</Card.Header>
-                    {formData.carouselItems.length > 0 ?
-                        <ListGroup variant="flush">
-                            {formData.carouselItems.map((item, i) => {
-                                return (
-                                    <Fragment key={i}>
-                                        {/* TODO: Add edit and delete buttons (icons) */}
-                                        <ListGroup.Item onClick={() => setSelectedItem(i)}>
-                                            <Row>
-                                                <Col md={8}>
-                                                    <h5>{item.title}</h5>
-                                                </Col>
-                                            </Row>
-                                            <Row>
-                                                <Col>
-                                                    <div style={{maxHeight: '20vh', overflowY: 'visible'}}>
-                                                        {item.description}
-                                                    </div>
-                                                </Col>
-                                            </Row>
-                                        </ListGroup.Item>
-                                    </Fragment>
-                                )
-                            })
-                            }
-                        </ListGroup>
-                        :
-                        <Card.Body className="text-center">
-                            <Card.Title>Пусто</Card.Title>
-                        </Card.Body>
-                    }
-                    <Card.Footer>
-                        <div className={"flex-center"}>
-                            <Button onClick={addCarouselItem} variant="outline-success">Добавить</Button>
-                        </div>
-                    </Card.Footer>
-                </Card>
-                <div className="add-block-buttons__wrapper">
-                    <Button onClick={addCarouselItem} variant={"success"} className={"add-block-button"}>
-                        Сохранить пост
-                    </Button>
-                    <Button onClick={handleReset} variant={"danger"} className={"add-block-button"}>
-                        Отменить
-                    </Button>
-                </div>
-            </Offcanvas.Body>
-        </Offcanvas>
-    </Fragment>)
+    return (
+        <Fragment>
+            <Offcanvas show={show} onHide={handleClose}>
+                <Offcanvas.Header closeButton>
+                    <Offcanvas.Title>Редактировать</Offcanvas.Title>
+                </Offcanvas.Header>
+                <Offcanvas.Body>
+                    <CarouselPostItemEditor formData={formData} setFormData={setFormData} selectedItem={selectedItem}
+                                            setSelectedItem={setSelectedItem}/>
+                    <Card style={{width: '100%', marginTop: '2vh'}}>
+                        <Card.Header>Компоненты карусели</Card.Header>
+                        {formData.carouselItems.length > 0 ?
+                            <ListGroup variant="flush">
+                                {formData.carouselItems.map((item, i) => {
+                                    return (
+                                        <Fragment key={i}>
+                                            {/* TODO: Add edit and delete buttons (icons) */}
+                                            <ListGroup.Item onClick={() => setSelectedItem(i)}>
+                                                <Row>
+                                                    <Col md={8}>
+                                                        <h5>{item.title}</h5>
+                                                    </Col>
+                                                </Row>
+                                                <Row>
+                                                    <Col>
+                                                        <div style={{maxHeight: '20vh', overflowY: 'visible'}}>
+                                                            {item.description}
+                                                        </div>
+                                                    </Col>
+                                                </Row>
+                                            </ListGroup.Item>
+                                        </Fragment>
+                                    )
+                                })
+                                }
+                            </ListGroup>
+                            :
+                            <Card.Body className="text-center">
+                                <Card.Title>Пусто</Card.Title>
+                            </Card.Body>
+                        }
+                        <Card.Footer>
+                            <div className={"flex-center"}>
+                                <Button onClick={addCarouselItem} variant="outline-success">Добавить</Button>
+                            </div>
+                        </Card.Footer>
+                    </Card>
+                    <div className="add-block-buttons__wrapper">
+                        <Button onClick={handleSubmit} variant={"success"} className={"add-block-button"}>
+                            Сохранить пост
+                        </Button>
+                        <Button onClick={handleReset} variant={"danger"} className={"add-block-button"}>
+                            Отменить
+                        </Button>
+                    </div>
+                </Offcanvas.Body>
+            </Offcanvas>
+        </Fragment>)
 }
 
 const CarouselPostItemEditor = ({formData, setFormData, selectedItem, setSelectedItem}) => {
@@ -157,6 +158,8 @@ const CarouselPostItemEditor = ({formData, setFormData, selectedItem, setSelecte
                     <Form.Control onChange={handleChange} name={"description"} rows={3} as={'textarea'}
                                   value={itemData?.description}/>
                 </Form.Group>
+
+                {/* TODO: add image form support */}
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="secondary" onClick={handleClose}>
