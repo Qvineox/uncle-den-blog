@@ -91,7 +91,7 @@ export function MapPostEditor({id, content, show, setShow, refreshData}) {
     return (<Fragment>
         <Offcanvas show={show} onHide={handleClose} className={'post-editor'}>
             <Offcanvas.Header closeButton>
-                <Offcanvas.Title className={'post-editor__title'}>Редактировать</Offcanvas.Title>
+                <Offcanvas.Title className={'post-editor__title'}>Редактировать карту</Offcanvas.Title>
             </Offcanvas.Header>
             <Offcanvas.Body>
                 <MapPostMarkerEditor formData={formData} setFormData={setFormData} selectedItem={selectedItem}
@@ -146,7 +146,7 @@ export function MapPostEditor({id, content, show, setShow, refreshData}) {
                                         <Col md={2} className={'post-editor__card-items__marker-manage'}>
                                             <img alt={'edit'} onClick={() => setSelectedItem(i)}
                                                  src={process.env.PUBLIC_URL + '/assets/icons/edit.svg'}/>
-                                            <img alt={'edit'} onClick={() => removeMarkerItem(i)}
+                                            <img alt={'remove'} onClick={() => removeMarkerItem(i)}
                                                  src={process.env.PUBLIC_URL + '/assets/icons/delete.svg'}/>
                                         </Col>
                                     </Row>
@@ -260,32 +260,48 @@ export const MapPostMarkerEditor = ({formData, setFormData, selectedItem, setSel
     }
 
     // TODO: fix form for new marker addition
-    return (<Modal show={show} onHide={handleClose}>
+    return (<Modal show={show} onHide={handleClose} className={'modal-form'}>
         <Modal.Header closeButton>
-            <Modal.Title>Изменение записи</Modal.Title>
+            <Modal.Title className={'modal-form__title'}>Изменение маркера</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-            <Form.Group className={"form-group"}>
-                <Form.Label>Заголовок</Form.Label>
-                <Form.Control onChange={handleChange} name={"title"} type={'text'}
+            <Form.Group className={"modal-form__form"}>
+                <Form.Label className={"modal-form__form__label"}>Заголовок</Form.Label>
+                <Form.Control className={"modal-form__form__text"}
+                              onChange={handleChange}
+                              name={"title"}
+                              type={'text'}
                               value={itemData?.title}/>
             </Form.Group>
-            <Form.Group className={"form-group"}>
-                <Form.Label>Описание</Form.Label>
-                <Form.Control onChange={handleChange} name={"description"} rows={3} as={'textarea'}
+
+            <Form.Group className={"modal-form__form"}>
+                <Form.Label className={"modal-form__form__label"}>Описание</Form.Label>
+                <Form.Control className={"modal-form__form__text"}
+                              onChange={handleChange}
+                              name={"description"}
+                              rows={3}
+                              as={'textarea'}
                               value={itemData?.description}/>
             </Form.Group>
 
-            <Form.Group className={"form-group"}>
-                <Form.Label>Широта</Form.Label>
-                <Form.Control onChange={handleCoordinates} name={"latitude"} type={'float'}
+            <Form.Group className={"modal-form__form"}>
+                <Form.Label className={"modal-form__form__label"}>Широта</Form.Label>
+                <Form.Control className={"modal-form__form__text"}
+                              onChange={handleCoordinates}
+                              name={"latitude"}
+                              type={'float'}
                               value={itemData?.position.lat}/>
-                <Form.Label>Долгота</Form.Label>
-                <Form.Control onChange={handleCoordinates} name={"longitude"} type={'float'}
+            </Form.Group>
+            <Form.Group className={"modal-form__form"}>
+                <Form.Label className={"modal-form__form__label"}>Долгота</Form.Label>
+                <Form.Control className={"modal-form__form__text"}
+                              onChange={handleCoordinates}
+                              name={"longitude"}
+                              type={'float'}
                               value={itemData?.position.lng}/>
             </Form.Group>
-
         </Modal.Body>
+
         <Modal.Footer>
             <Button variant="secondary" onClick={handleClose}>
                 Закрыть

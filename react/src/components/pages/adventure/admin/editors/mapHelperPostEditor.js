@@ -1,7 +1,7 @@
 import {Fragment, useState} from "react";
 import {createPost, updatePost} from "../scripts/postHandlers";
 import {MapPostMarkerEditor} from "./mapPostEditor"
-import {Button, Card, Col, Form, ListGroup, Modal, Offcanvas, Row} from "react-bootstrap";
+import {Button, Card, Col, ListGroup, Offcanvas, Row} from "react-bootstrap";
 
 export default function MapHelperPostEditor({id, content, show, setShow, refreshData}) {
     const [formData, setFormData] = useState(content)
@@ -19,6 +19,15 @@ export default function MapHelperPostEditor({id, content, show, setShow, refresh
                     visibility: true
                 }
             ]
+        }))
+    }
+
+    const removeMarkerItem = (index) => {
+        let items = formData.markers
+        items.splice(index, 1)
+
+        setFormData(values => ({
+            ...values, markers: items
         }))
     }
 
@@ -42,31 +51,38 @@ export default function MapHelperPostEditor({id, content, show, setShow, refresh
     }
 
     return (<Fragment>
-        <Offcanvas show={show} onHide={handleClose}>
+        <Offcanvas show={show} onHide={handleClose} className={'post-editor'}>
             <Offcanvas.Header closeButton>
-                <Offcanvas.Title>Редактировать</Offcanvas.Title>
+                <Offcanvas.Title className={'post-editor__title'}>
+                    Редактировать карту с подсказками
+                </Offcanvas.Title>
             </Offcanvas.Header>
             <Offcanvas.Body>
                 <MapPostMarkerEditor formData={formData} setFormData={setFormData} selectedItem={selectedItem}
                                      setSelectedItem={setSelectedItem}/>
 
-                <Card style={{width: '100%', marginTop: '2vh'}}>
+                <Card className={'post-editor__card-items'}>
                     <Card.Header>Компоненты карты</Card.Header>
                     {formData.markers.length > 0 ?
                         <ListGroup variant="flush">
                             {formData.markers.map((marker, i) => {
                                 return (
                                     <Fragment key={i}>
-                                        {/* TODO: Add edit and delete buttons (icons) */}
-                                        <ListGroup.Item onClick={() => setSelectedItem(i)}>
+                                        <ListGroup.Item className={'post-editor__card-items__marker'}>
                                             <Row>
-                                                <Col md={8}>
-                                                    <h5>{marker.title}</h5>
+                                                <Col md={10}>
+                                                    <h5 className={'post-editor__card-items__marker__title'}>{marker.title}</h5>
+                                                </Col>
+                                                <Col md={2} className={'post-editor__card-items__marker-manage'}>
+                                                    <img alt={'edit'} onClick={() => setSelectedItem(i)}
+                                                         src={process.env.PUBLIC_URL + '/assets/icons/edit.svg'}/>
+                                                    <img alt={'remove'} onClick={() => removeMarkerItem(i)}
+                                                         src={process.env.PUBLIC_URL + '/assets/icons/delete.svg'}/>
                                                 </Col>
                                             </Row>
                                             <Row>
                                                 <Col>
-                                                    <div style={{maxHeight: '20vh', overflowY: 'visible'}}>
+                                                    <div className={'post-editor__card-items__marker__description'}>
                                                         {marker.description}
                                                     </div>
                                                 </Col>
@@ -88,12 +104,16 @@ export default function MapHelperPostEditor({id, content, show, setShow, refresh
                         </div>
                     </Card.Footer>
                 </Card>
-                <div className="add-block-buttons__wrapper">
-                    <Button onClick={handleSubmit} variant={"success"} className={"add-block-button"}>
-                        Сохранить пост
-                    </Button>
-                    <Button onClick={handleReset} variant={"danger"} className={"add-block-button"}>
+
+                <hr className="post-editor__separator"/>
+                <div className="post-editor__button-wrapper">
+                    <Button variant="secondary" onClick={handleReset}>
                         Отменить
+                    </Button>
+
+                    {/* TODO: add disable function */}
+                    <Button variant="primary" onClick={handleSubmit}>
+                        Сохранить изменения
                     </Button>
                 </div>
             </Offcanvas.Body>

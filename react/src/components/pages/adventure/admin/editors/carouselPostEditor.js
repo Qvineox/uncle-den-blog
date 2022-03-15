@@ -20,6 +20,15 @@ export default function CarouselPostEditor({id, content, show, setShow, refreshD
         }))
     }
 
+    const removeCarouselItem = (index) => {
+        let items = formData.carouselItems
+        items.splice(index, 1)
+
+        setFormData(values => ({
+            ...values, carouselItems: items
+        }))
+    }
+
     const handleReset = () => {
         setFormData(content)
     }
@@ -41,30 +50,40 @@ export default function CarouselPostEditor({id, content, show, setShow, refreshD
 
     return (
         <Fragment>
-            <Offcanvas show={show} onHide={handleClose}>
+            <Offcanvas show={show} onHide={handleClose} className={'post-editor'}>
                 <Offcanvas.Header closeButton>
-                    <Offcanvas.Title>Редактировать</Offcanvas.Title>
+                    <Offcanvas.Title className={'post-editor__title'}>Редактировать карусель</Offcanvas.Title>
                 </Offcanvas.Header>
                 <Offcanvas.Body>
-                    <CarouselPostItemEditor formData={formData} setFormData={setFormData} selectedItem={selectedItem}
+                    <CarouselPostItemEditor formData={formData}
+                                            setFormData={setFormData}
+                                            selectedItem={selectedItem}
                                             setSelectedItem={setSelectedItem}/>
-                    <Card style={{width: '100%', marginTop: '2vh'}}>
+
+                    <Card className={'post-editor__card-items'}>
                         <Card.Header>Компоненты карусели</Card.Header>
                         {formData.carouselItems.length > 0 ?
                             <ListGroup variant="flush">
                                 {formData.carouselItems.map((item, i) => {
                                     return (
                                         <Fragment key={i}>
-                                            {/* TODO: Add edit and delete buttons (icons) */}
-                                            <ListGroup.Item onClick={() => setSelectedItem(i)}>
+                                            <ListGroup.Item className={'post-editor__card-items__marker'}>
                                                 <Row>
-                                                    <Col md={8}>
-                                                        <h5>{item.title}</h5>
+                                                    <Col md={10}>
+                                                        <h5 className={'post-editor__card-items__marker__title'}>
+                                                            {item.title}
+                                                        </h5>
+                                                    </Col>
+                                                    <Col md={2} className={'post-editor__card-items__marker-manage'}>
+                                                        <img alt={'edit'} onClick={() => setSelectedItem(i)}
+                                                             src={process.env.PUBLIC_URL + '/assets/icons/edit.svg'}/>
+                                                        <img alt={'remove'} onClick={() => removeCarouselItem(i)}
+                                                             src={process.env.PUBLIC_URL + '/assets/icons/delete.svg'}/>
                                                     </Col>
                                                 </Row>
                                                 <Row>
                                                     <Col>
-                                                        <div style={{maxHeight: '20vh', overflowY: 'visible'}}>
+                                                        <div className={'post-editor__card-items__marker__description'}>
                                                             {item.description}
                                                         </div>
                                                     </Col>
@@ -86,12 +105,16 @@ export default function CarouselPostEditor({id, content, show, setShow, refreshD
                             </div>
                         </Card.Footer>
                     </Card>
-                    <div className="add-block-buttons__wrapper">
-                        <Button onClick={handleSubmit} variant={"success"} className={"add-block-button"}>
-                            Сохранить пост
-                        </Button>
-                        <Button onClick={handleReset} variant={"danger"} className={"add-block-button"}>
+
+                    <hr className="post-editor__separator"/>
+                    <div className="post-editor__button-wrapper">
+                        <Button variant="secondary" onClick={handleReset}>
                             Отменить
+                        </Button>
+
+                        {/* TODO: add disable function */}
+                        <Button variant="primary" onClick={handleSubmit}>
+                            Сохранить изменения
                         </Button>
                     </div>
                 </Offcanvas.Body>
@@ -143,24 +166,33 @@ const CarouselPostItemEditor = ({formData, setFormData, selectedItem, setSelecte
     }
 
     return (
-        <Modal show={show} onHide={handleClose}>
+        <Modal show={show} onHide={handleClose} className={'modal-form'}>
             <Modal.Header closeButton>
-                <Modal.Title>Изменение записи</Modal.Title>
+                <Modal.Title className={'modal-form__title'}>Изменение записи</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <Form.Group className={"form-group"}>
-                    <Form.Label>Заголовок</Form.Label>
-                    <Form.Control onChange={handleChange} name={"title"} type={'text'}
+                <Form.Group className={"modal-form__form"}>
+                    <Form.Label className={"modal-form__form__label"}>Заголовок</Form.Label>
+                    <Form.Control className={"modal-form__form__text"} onChange={handleChange} name={"title"}
+                                  type={'text'}
                                   value={itemData?.title}/>
+                    <Form.Text className='modal-form__form__hint'>
+                        Рекомендуется не более 5 слов.
+                    </Form.Text>
                 </Form.Group>
-                <Form.Group className={"form-group"}>
-                    <Form.Label>Описание</Form.Label>
-                    <Form.Control onChange={handleChange} name={"description"} rows={3} as={'textarea'}
+                <Form.Group className={"modal-form__form"}>
+                    <Form.Label className={"modal-form__form__label"}>Описание</Form.Label>
+                    <Form.Control className={"modal-form__form__textarea"}
+                                  onChange={handleChange} name={"description"} rows={3} as={'textarea'}
                                   value={itemData?.description}/>
+                    <Form.Text className='modal-form__form__hint'>
+                        Рекомендуется до 50 символов.
+                    </Form.Text>
                 </Form.Group>
 
                 {/* TODO: add image form support */}
             </Modal.Body>
+
             <Modal.Footer>
                 <Button variant="secondary" onClick={handleClose}>
                     Закрыть

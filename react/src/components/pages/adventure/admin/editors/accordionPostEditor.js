@@ -2,6 +2,8 @@ import {Fragment, useEffect, useState} from "react";
 import {Button, Card, Col, Form, ListGroup, Modal, Offcanvas, Row} from "react-bootstrap";
 import {createPost, updatePost} from "../scripts/postHandlers";
 
+import '../../styles/admin/editors.scss'
+
 export default function AccordionPostEditor({id, content, show, setShow, refreshData}) {
     const [formData, setFormData] = useState(content)
     const [selectedItem, setSelectedItem] = useState(null)
@@ -15,6 +17,15 @@ export default function AccordionPostEditor({id, content, show, setShow, refresh
                     description: 'Новое описание.'
                 }
             ]
+        }))
+    }
+
+    const removeAccordionItem = (index) => {
+        let items = formData.accordionItems
+        items.splice(index, 1)
+
+        setFormData(values => ({
+            ...values, accordionItems: items
         }))
     }
 
@@ -38,14 +49,17 @@ export default function AccordionPostEditor({id, content, show, setShow, refresh
     }
 
     return (<Fragment>
-        <Offcanvas show={show} onHide={handleClose}>
+        <Offcanvas show={show} onHide={handleClose} className={'post-editor'}>
             <Offcanvas.Header closeButton>
-                <Offcanvas.Title>Редактировать</Offcanvas.Title>
+                <Offcanvas.Title className={'post-editor__title'}>
+                    Редактировать аккордион
+                </Offcanvas.Title>
             </Offcanvas.Header>
             <Offcanvas.Body>
                 <AccordionPostItemEditor formData={formData} setFormData={setFormData} selectedItem={selectedItem}
                                          setSelectedItem={setSelectedItem}/>
-                <Card style={{width: '100%', marginTop: '2vh'}}>
+
+                <Card className={'post-editor__card-items'}>
                     <Card.Header>Компоненты аккордиона</Card.Header>
                     {formData.accordionItems.length > 0 ?
                         <ListGroup variant="flush">
@@ -53,15 +67,23 @@ export default function AccordionPostEditor({id, content, show, setShow, refresh
                                 return (
                                     <Fragment key={i}>
                                         {/* TODO: Add edit and delete buttons (icons) */}
-                                        <ListGroup.Item onClick={() => setSelectedItem(i)}>
+                                        <ListGroup.Item className={'post-editor__card-items__marker'}>
                                             <Row>
-                                                <Col md={8}>
-                                                    <h5>{marker.title}</h5>
+                                                <Col md={10}>
+                                                    <h5 className={'post-editor__card-items__marker__title'}>
+                                                        {marker.title}
+                                                    </h5>
+                                                </Col>
+                                                <Col md={2} className={'post-editor__card-items__marker-manage'}>
+                                                    <img alt={'edit'} onClick={() => setSelectedItem(i)}
+                                                         src={process.env.PUBLIC_URL + '/assets/icons/edit.svg'}/>
+                                                    <img alt={'remove'} onClick={() => removeAccordionItem(i)}
+                                                         src={process.env.PUBLIC_URL + '/assets/icons/delete.svg'}/>
                                                 </Col>
                                             </Row>
                                             <Row>
                                                 <Col>
-                                                    <div style={{maxHeight: '20vh', overflowY: 'visible'}}>
+                                                    <div className={'post-editor__card-items__marker__description'}>
                                                         {marker.description}
                                                     </div>
                                                 </Col>
@@ -69,8 +91,7 @@ export default function AccordionPostEditor({id, content, show, setShow, refresh
                                         </ListGroup.Item>
                                     </Fragment>
                                 )
-                            })
-                            }
+                            })}
                         </ListGroup>
                         :
                         <Card.Body className="text-center">
@@ -83,12 +104,16 @@ export default function AccordionPostEditor({id, content, show, setShow, refresh
                         </div>
                     </Card.Footer>
                 </Card>
-                <div className="add-block-buttons__wrapper">
-                    <Button onClick={handleSubmit} variant={"success"} className={"add-block-button"}>
-                        Сохранить пост
-                    </Button>
-                    <Button onClick={handleReset} variant={"danger"} className={"add-block-button"}>
+
+                <hr className="post-editor__separator"/>
+                <div className="post-editor__button-wrapper">
+                    <Button variant="secondary" onClick={handleReset}>
                         Отменить
+                    </Button>
+
+                    {/* TODO: add disable function */}
+                    <Button variant="primary" onClick={handleSubmit}>
+                        Сохранить изменения
                     </Button>
                 </div>
             </Offcanvas.Body>
@@ -140,20 +165,33 @@ const AccordionPostItemEditor = ({formData, setFormData, selectedItem, setSelect
     }
 
     return (
-        <Modal show={show} onHide={handleClose}>
+        <Modal show={show} onHide={handleClose} className={'modal-form'}>
             <Modal.Header closeButton>
-                <Modal.Title>Изменение записи</Modal.Title>
+                <Modal.Title className={'modal-form__title'}>Изменение записи</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <Form.Group className={"form-group"}>
-                    <Form.Label>Заголовок</Form.Label>
-                    <Form.Control onChange={handleChange} name={"title"} type={'text'}
+                <Form.Group className={"modal-form__form"}>
+                    <Form.Label className={"modal-form__form__label"}>Заголовок</Form.Label>
+                    <Form.Control className={"modal-form__form__text"}
+                                  onChange={handleChange}
+                                  name={"title"}
+                                  type={'text'}
                                   value={itemData?.title}/>
+                    <Form.Text className='modal-form__form__hint'>
+                        Значение на закрытом элементе аккордиона.
+                    </Form.Text>
                 </Form.Group>
-                <Form.Group className={"form-group"}>
-                    <Form.Label>Описание</Form.Label>
-                    <Form.Control onChange={handleChange} name={"description"} rows={3} as={'textarea'}
+                <Form.Group className={"modal-form__form"}>
+                    <Form.Label className={"modal-form__form__label"}>Описание</Form.Label>
+                    <Form.Control className={"modal-form__form__textarea"}
+                                  onChange={handleChange}
+                                  name={"description"}
+                                  rows={5}
+                                  as={'textarea'}
                                   value={itemData?.description}/>
+                    <Form.Text className='modal-form__form__hint'>
+                        Рекомендуется от 50 до 200 символов.
+                    </Form.Text>
                 </Form.Group>
             </Modal.Body>
             <Modal.Footer>

@@ -44,7 +44,7 @@ export default function TextPostEditor({id, content, show, setShow, refreshData}
                 </Offcanvas.Title>
             </Offcanvas.Header>
             <Offcanvas.Body>
-                <Form.Group className={'form-group post-editor__form'}>
+                <Form.Group className={'post-editor__form'}>
                     <Form.Label className={'post-editor__form__label'}>Основной текст</Form.Label>
                     <Form.Control className={'post-editor__form_textarea'} onChange={handleChange}
                                   name={"description"} rows={10} as="textarea"
