@@ -5,9 +5,9 @@ import {DirectionsRenderer, GoogleMap, Polyline} from "@react-google-maps/api";
 export default function MyGoogleMap(props) {
     const mapRef = useRef(undefined)
 
-    const path = props.polyline?.map((item) => {
-        return {lat: item[0], lng: item[1]}
-    })
+    // const path = props.polyline?.map((item) => {
+    //     return {lat: item[0], lng: item[1]}
+    // })
 
     const polylineOptions = {
         strokeColor: '#FF0E0E',
@@ -45,7 +45,7 @@ export default function MyGoogleMap(props) {
                 onLoad={onLoad}
                 onUnmount={onUnmount}
             >
-                <Polyline path={path} options={polylineOptions}/>
+                <Polyline path={props.polyline} options={polylineOptions}/>
             </GoogleMap>
         </Fragment>
     )

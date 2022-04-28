@@ -37,7 +37,7 @@ export function MapPostEditor({id, content, show, setShow, refreshData}) {
         if (id) {
             let data = {
                 ...formData, zoom: parseInt(formData.zoom), center: {
-                    lat: parseFloat(formData.center.lat).toFixed(5), lng: parseFloat(formData.center.lng).toFixed(5),
+                    lat: parseFloat(formData.center.lat), lng: parseFloat(formData.center.lng),
                 }
             }
 
@@ -248,7 +248,7 @@ export const MapPostMarkerEditor = ({formData, setFormData, selectedItem, setSel
 
         items[selectedItem] = {
             title: itemData.title, description: itemData.description, position: {
-                lat: parseFloat(itemData.position.lat).toFixed(5), lng: parseFloat(itemData.position.lng).toFixed(5),
+                lat: parseFloat(itemData.position.lat), lng: parseFloat(itemData.position.lng),
             }
         }
 

@@ -9,10 +9,7 @@ export default function AdventureCard(props) {
                 <div className={"adventure-card__map"}>
                     <div className="google-map">
                         <MyGoogleMap
-                            center={{
-                                lat: props.adventure.path[props.adventure.path.length / 2 | 0][0],
-                                lng: props.adventure.path[props.adventure.path.length / 2 | 0][1]
-                            }}
+                            center={props.adventure.path[props.adventure.path.length/2]}
                             zoom={4}
                             polyline={props.adventure.path}/>
                     </div>
@@ -23,7 +20,7 @@ export default function AdventureCard(props) {
                         <h2>{props.adventure.description}</h2>
                         <hr/>
                         <h2>{props.adventure.countries.map(country => {
-                            return `${country.name} `
+                            return `${country.name}    `
                         })}</h2>
                         <hr/>
                     </div>
