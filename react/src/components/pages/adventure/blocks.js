@@ -9,6 +9,7 @@ import CarouselPostEditor from "./admin/editors/carouselPostEditor";
 import {MapPostEditor} from "./admin/editors/mapPostEditor";
 import LinkPostEditor from "./admin/editors/linkPostEditor";
 import MapHelperPostEditor from "./admin/editors/mapHelperPostEditor";
+import ImagePostEditor from "./admin/editors/imageBlockEditor";
 
 export const ACTIONS = {
     ADD_TEXT_BLOCK: 'text', // content
@@ -39,6 +40,9 @@ export function ArticleBlock({type, content, id, requestRefresh}) {
         switch (type) {
             case ACTIONS.ADD_TEXT_BLOCK:
                 setBlock(<SimpleTextBlock id={id} content={content}/>)
+                break
+            case ACTIONS.ADD_IMAGE_BLOCK:
+                setBlock(<SimpleImageBlock id={id} content={content}/>)
                 break
             case ACTIONS.ADD_LINK_BLOCK:
                 setBlock(<LinkButtonBlock id={id} content={content}/>)
@@ -93,6 +97,34 @@ export function ArticleBlock({type, content, id, requestRefresh}) {
                                 <Button onClick={() => deleteBlock(id)} variant={"outline-danger"}>Delete</Button>
                             </div>
                             <TextPostEditor refreshData={requestRefresh} id={id} content={content} show={showEdit}
+                                            setShow={setShowEdit}/>
+                        </Fragment>
+                    }
+                </div>
+            </Fragment>
+        )
+    }
+
+    const SimpleImageBlock = ({id, content}) => {
+
+        const [showEdit, setShowEdit] = useState(false)
+
+        return (
+            <Fragment>
+                <div className={"article-block image"}>
+                    <div className={content.inverted ? "article-block image-right" : "article-block image-left"}>
+                        <p>
+                            {content.description}
+                        </p>
+                        <img src={`${process.env.REACT_APP_BACKEND_HOST}/${content.image}`} alt={content.alt}/>
+                    </div>
+                    {isAdmin &&
+                        <Fragment>
+                            <div className={"block-tooltip"}>
+                                <Button onClick={() => setShowEdit(true)} variant={"outline-light"}>Edit</Button>
+                                <Button onClick={() => deleteBlock(id)} variant={"outline-danger"}>Delete</Button>
+                            </div>
+                            <ImagePostEditor refreshData={requestRefresh} id={id} content={content} show={showEdit}
                                             setShow={setShowEdit}/>
                         </Fragment>
                     }

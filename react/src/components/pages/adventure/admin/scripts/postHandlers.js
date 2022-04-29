@@ -1,7 +1,7 @@
 function deletePost(id) {
     console.debug(`deleting post #${id}`)
 
-    fetch(`http://localhost:3002/adventures/delete_post`, {
+    fetch(`${process.env.REACT_APP_BACKEND_HOST}/adventures/delete_post`, {
         method: 'POST',
         mode: 'cors',
         credentials: 'same-origin',
@@ -21,7 +21,7 @@ function deletePost(id) {
 function updatePost(id, newContent) {
     console.debug(`updating post #${id}`)
 
-    fetch(`http://localhost:3002/adventures/edit_post_content`, {
+    fetch(`${process.env.REACT_APP_BACKEND_HOST}/adventures/edit_post_content`, {
         method: 'POST',
         mode: 'cors',
         credentials: 'same-origin',
@@ -42,7 +42,7 @@ function updatePost(id, newContent) {
 function createPost(type, content, articleId) {
     console.debug(`creating new post`)
 
-    fetch(`http://localhost:3002/adventures/add_post`, {
+    fetch(`${process.env.REACT_APP_BACKEND_HOST}/adventures/add_post`, {
         method: 'POST',
         mode: 'cors',
         credentials: 'same-origin',
@@ -63,8 +63,32 @@ function createPost(type, content, articleId) {
     }).then(data => console.debug(data))
 }
 
+function updateImagePost(id, content, images) {
+    console.debug(`uploading new image`, images)
+
+    const formData = new FormData();
+
+    formData.append('postId', id);
+    formData.append('postDescription', content.description);
+
+    formData.append('postImageInverted', content.inverted);
+    formData.append('postImage', images[0]);
+
+    fetch(`${process.env.REACT_APP_BACKEND_HOST}/adventures/edit_image_post`, {
+        method: 'POST',
+        mode: 'cors',
+        body: formData,
+        credentials: 'same-origin'
+    }).catch((err) => {
+        console.error(err)
+    }).then(response => {
+        return response.json()
+    }).then(data => console.debug(data))
+}
+
 module.exports = {
     deletePost,
     updatePost,
-    createPost
+    createPost,
+    updateImagePost
 }

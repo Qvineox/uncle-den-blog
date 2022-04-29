@@ -18,6 +18,15 @@ export default function EditorPanel({articleId, requestRefresh}) {
                 }
 
                 break
+            case ACTIONS.ADD_IMAGE_BLOCK:
+                newPost.content = {
+                    description: "Описание отсутствует.",
+                    inverted: false,
+                    image: '/assets/images/600x200-placeholder.png',
+                    alt: 'Изображение отсутствует',
+                }
+
+                break
             case ACTIONS.ADD_MAP_BLOCK:
                 newPost.content = {
                     zoom: 5,
@@ -90,14 +99,14 @@ export default function EditorPanel({articleId, requestRefresh}) {
                     <Dropdown.Menu>
                         <Dropdown.Item
                             onClick={() => handlePost({action: ACTIONS.ADD_TEXT_BLOCK})}>Текст</Dropdown.Item>
-                        <Dropdown.Item disabled>Изображение</Dropdown.Item>
+                        <Dropdown.Item onClick={() => handlePost({action: ACTIONS.ADD_IMAGE_BLOCK})}>Изображение</Dropdown.Item>
                         <Dropdown.Item disabled>Группа изображений</Dropdown.Item>
                         <Dropdown.Divider/>
                         <Dropdown.Item
                             onClick={() => handlePost({action: ACTIONS.ADD_MAP_BLOCK})}>Карта</Dropdown.Item>
-                        <Dropdown.Item onClick={() => handlePost({action: ACTIONS.ADD_MAP_HELPER_BLOCK})}>Карта
-                            с
-                            подсказками</Dropdown.Item>
+                        <Dropdown.Item onClick={() => handlePost({action: ACTIONS.ADD_MAP_HELPER_BLOCK})}>
+                            Карта с подсказками
+                        </Dropdown.Item>
                         <Dropdown.Divider/>
                         <Dropdown.Item
                             onClick={() => handlePost({action: ACTIONS.ADD_ACCORDION_BLOCK})}>Аккордион</Dropdown.Item>

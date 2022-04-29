@@ -75,6 +75,7 @@ export default function LinkPostEditor({id, content, show, setShow, refreshData}
                 {/* TODO: image form support */}
 
                 <hr className="post-editor__separator"/>
+
                 <div className="post-editor__button-wrapper">
                     <Button variant="secondary" onClick={handleReset}>
                         Отменить

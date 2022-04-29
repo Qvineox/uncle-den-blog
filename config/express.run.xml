@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="express" type="NodeJSConfigurationType" singleton="false" path-to-node="node" path-to-js-file="bin/server.js" working-dir="$PROJECT_DIR$/express">
+  <configuration default="false" name="express" type="NodeJSConfigurationType" singleton="false" path-to-node="node" path-to-js-file="$PROJECT_DIR$/express/server.js" working-dir="$PROJECT_DIR$/express">
     <method v="2" />
   </configuration>
 </component>

@@ -102,18 +102,24 @@
     padding: 2em 2em;
 }
 
+.article-block.image img {
+    max-width: 25vw;
+}
+
 .article-block.image-left {
     display: flex;
     flex-direction: row;
-
     align-items: center;
+    flex-wrap: nowrap;
+    justify-content: flex-end;
 }
 
 .article-block.image-right {
     display: flex;
     flex-direction: row-reverse;
-
     align-items: center;
+    flex-wrap: nowrap;
+    justify-content: flex-end;
 }
 
 .article-block.images {

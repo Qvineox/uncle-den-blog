@@ -1,11 +1,13 @@
 const express = require('express')
 const e = require("express");
-const {Countries, Posts} = require("../bin/server");
+const {Countries, Posts} = require("../server");
 const router = express.Router()
 
+const fileMiddleware = require('../middleware/multer')
+
 router.get('/', async (req, res) => {
-    const Adventures = require('../bin/server').Adventures
-    const Countries = require('../bin/server').Countries
+    const Adventures = require('../server').Adventures
+    const Countries = require('../server').Countries
 
     let payload = {
         "result": await Adventures.findAll({
@@ -19,8 +21,8 @@ router.get('/', async (req, res) => {
 })
 
 router.get('/:id', async (req, res) => {
-        const Adventures = require('../bin/server').Adventures
-        const Posts = require('../bin/server').Posts
+        const Adventures = require('../server').Adventures
+        const Posts = require('../server').Posts
 
         await Adventures.findAll({
             where: {
@@ -51,7 +53,7 @@ router.get('/:id', async (req, res) => {
 )
 
 router.post('/add_post', async (req, res) => {
-    const Posts = require('../bin/server').Posts
+    const Posts = require('../server').Posts
 
     const newPost = await Posts.create({
         type: req.body.postType,
@@ -62,8 +64,9 @@ router.post('/add_post', async (req, res) => {
     res.status(200).json(newPost)
 })
 
+
 router.post('/edit_post_content', async (req, res) => {
-    const Posts = require('../bin/server').Posts
+    const Posts = require('../server').Posts
 
     const editPost = await Posts.update(
         {
@@ -75,8 +78,35 @@ router.post('/edit_post_content', async (req, res) => {
     res.status(200).json(editPost)
 })
 
+
+router.post('/edit_image_post', fileMiddleware.fields([
+        {name: 'postId', maxCount: 1},
+        {name: 'postDescription', maxCount: 1},
+        {name: 'postImageInverted', maxCount: 1},
+        {name: 'postImage', maxCount: 1}]),
+    async (req, res) => {
+        const Posts = require('../server').Posts
+
+        const savedImage = req.files['postImage'][0]
+
+        const editPost = await Posts.update(
+            {
+                content: {
+                    description: req.body.postDescription,
+                    alt: savedImage.originalname,
+                    image: savedImage.path,
+                    inverted: req.body.postImageInverted === 'true'
+                }
+            }, {
+                where: {id: req.body.postId}
+            })
+
+        res.status(200).json(editPost)
+    })
+
+
 router.post('/delete_post', async (req, res) => {
-    const Posts = require('../bin/server').Posts
+    const Posts = require('../server').Posts
 
     const deletePost = await Posts.destroy({
         where: {
@@ -89,7 +119,7 @@ router.post('/delete_post', async (req, res) => {
 
 // TODO: remove adventure JSON
 router.delete('/:id', async (req, res) => {
-    const Adventures = require('../bin/server').Adventures
+    const Adventures = require('../server').Adventures
 
     await Adventures.destroy({
         where: {
@@ -104,7 +134,7 @@ router.delete('/:id', async (req, res) => {
 
 // TODO: add new adventure JSON
 router.post('/', (req, res) => {
-    const Adventures = require('../bin/server').Adventures
+    const Adventures = require('../server').Adventures
 })
 
 

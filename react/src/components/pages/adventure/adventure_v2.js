@@ -39,7 +39,7 @@ export default function Adventure2(props) {
     const loadData = () => {
         console.debug('> receiving data...')
 
-        fetch(`http://localhost:3002/adventures/${id}`).then(response => {
+        fetch(`${process.env.REACT_APP_BACKEND_HOST}/adventures/${id}`).then(response => {
             return response.json()
         }).then((data) => {
             console.log(data)
