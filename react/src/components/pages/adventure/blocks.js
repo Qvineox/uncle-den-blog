@@ -10,6 +10,7 @@ import {MapPostEditor} from "./admin/editors/mapPostEditor";
 import LinkPostEditor from "./admin/editors/linkPostEditor";
 import MapHelperPostEditor from "./admin/editors/mapHelperPostEditor";
 import ImagePostEditor from "./admin/editors/imageBlockEditor";
+import {ImagePost, TextPost} from "../../../classes/data/post.classes";
 
 export const ACTIONS = {
     ADD_TEXT_BLOCK: 'text', // content
@@ -29,7 +30,7 @@ export const ACTIONS = {
 
 const isAdmin = localStorage.getItem('isAdmin') === 'true'
 
-export function ArticleBlock({type, content, id, requestRefresh}) {
+export function ArticleBlock({type, content, order, id, requestRefresh}) {
     const [block, setBlock] = useState(null)
 
     useEffect(() => {
@@ -39,10 +40,11 @@ export function ArticleBlock({type, content, id, requestRefresh}) {
     function createBlock(type, content) {
         switch (type) {
             case ACTIONS.ADD_TEXT_BLOCK:
-                setBlock(<SimpleTextBlock id={id} content={content}/>)
+                setBlock(<SimpleTextBlock postId={id} postOrder={order} postText={content.text} />)
                 break
             case ACTIONS.ADD_IMAGE_BLOCK:
-                setBlock(<SimpleImageBlock id={id} content={content}/>)
+                setBlock(<SimpleImageBlock
+                    postData={new ImagePost(id, order, content.isInverted, content.text, content.image.path)}/>)
                 break
             case ACTIONS.ADD_LINK_BLOCK:
                 setBlock(<LinkButtonBlock id={id} content={content}/>)
@@ -80,23 +82,32 @@ export function ArticleBlock({type, content, id, requestRefresh}) {
         )
     }
 
-    const SimpleTextBlock = ({id, content}) => {
-
+    const SimpleTextBlock = ({postId, postOrder, postText}) => {
+        const [postData, setPostData] = useState(new TextPost(postId, postOrder, postText))
         const [showEdit, setShowEdit] = useState(false)
 
         return (
             <Fragment>
                 <div className={"article-block text"}>
                     <p>
-                        {content.description}
+                        {postData.content.text}
                     </p>
                     {isAdmin &&
                         <Fragment>
                             <div className={"block-tooltip"}>
                                 <Button onClick={() => setShowEdit(true)} variant={"outline-light"}>Edit</Button>
-                                <Button onClick={() => deleteBlock(id)} variant={"outline-danger"}>Delete</Button>
+                                <Button onClick={() => {
+                                    postData.dbDelete().then(event => {
+                                        console.debug(event)
+                                    })
+
+                                    requestRefresh()
+                                }} variant={"outline-danger"}>Delete</Button>
                             </div>
-                            <TextPostEditor refreshData={requestRefresh} id={id} content={content} show={showEdit}
+
+                            <TextPostEditor refreshData={requestRefresh}
+                                            postData={postData}
+                                            show={showEdit}
                                             setShow={setShowEdit}/>
                         </Fragment>
                     }
@@ -105,7 +116,7 @@ export function ArticleBlock({type, content, id, requestRefresh}) {
         )
     }
 
-    const SimpleImageBlock = ({id, content}) => {
+    const SimpleImageBlock = ({postData}) => {
 
         const [showEdit, setShowEdit] = useState(false)
 
@@ -114,9 +125,9 @@ export function ArticleBlock({type, content, id, requestRefresh}) {
                 <div className={"article-block image"}>
                     <div className={content.inverted ? "article-block image-right" : "article-block image-left"}>
                         <p>
-                            {content.description}
+                            {postData.content.text}
                         </p>
-                        <img src={`${process.env.REACT_APP_BACKEND_HOST}/${content.image}`} alt={content.alt}/>
+                        <img src={postData.content.image.path} alt={postData.content.image.alt}/>
                     </div>
                     {isAdmin &&
                         <Fragment>
@@ -125,7 +136,7 @@ export function ArticleBlock({type, content, id, requestRefresh}) {
                                 <Button onClick={() => deleteBlock(id)} variant={"outline-danger"}>Delete</Button>
                             </div>
                             <ImagePostEditor refreshData={requestRefresh} id={id} content={content} show={showEdit}
-                                            setShow={setShowEdit}/>
+                                             setShow={setShowEdit}/>
                         </Fragment>
                     }
                 </div>

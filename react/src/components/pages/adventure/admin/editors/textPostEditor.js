@@ -1,11 +1,12 @@
 import {Fragment, useState} from "react";
 import {Button, Form, Offcanvas} from "react-bootstrap";
-import {createPost, updatePost} from "../scripts/postHandlers";
+import {createPost} from "../scripts/postHandlers";
 
 import '../../styles/admin/editors.scss'
+import {TextPost} from "../../../../../classes/data/post.classes";
 
-export default function TextPostEditor({id, content, show, setShow, refreshData}) {
-    const [formData, setFormData] = useState(content)
+export default function TextPostEditor({postData, show, setShow, refreshData}) {
+    const [formData, setFormData] = useState(postData.content)
 
     const handleChange = (evt) => {
         const name = evt.target.name;
@@ -19,12 +20,14 @@ export default function TextPostEditor({id, content, show, setShow, refreshData}
     }
 
     const handleReset = () => {
-        setFormData(content)
+        setFormData(postData.content)
     }
 
     const handleSubmit = () => {
-        if (id) {
-            updatePost(id, formData)
+        if (postData.id) {
+            new TextPost(postData.id, postData.order, formData.text).dbInsert().then(event => {
+                console.debug(event)
+            })
         } else {
             createPost('text', formData)
         }
@@ -47,8 +50,8 @@ export default function TextPostEditor({id, content, show, setShow, refreshData}
                 <Form.Group className={'post-editor__form'}>
                     <Form.Label className={'post-editor__form__label'}>Основной текст</Form.Label>
                     <Form.Control className={'post-editor__form_textarea'} onChange={handleChange}
-                                  name={"description"} rows={10} as="textarea"
-                                  value={formData.description}/>
+                                  name={"text"} rows={10} as="textarea"
+                                  value={formData.text}/>
 
                     {/* TODO: add .success .error .warning class modifications */}
                     <Form.Text className='post-editor__form__hint'>

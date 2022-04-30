@@ -81,6 +81,7 @@ export default function Adventure2(props) {
                                     <ArticleBlock type={item.type}
                                                   key={item.id}
                                                   id={item.id}
+                                                  order={item.order}
                                                   content={item.content}
                                                   requestRefresh={requestRefresh}/>
                                 )
@@ -93,7 +94,7 @@ export default function Adventure2(props) {
                     <div>Loading...</div>
                 </Fragment>
             }
-            {isAdmin && <EditorPanel articleId={id} requestRefresh={requestRefresh}/>}
+            {isAdmin && <EditorPanel adventureId={id} requestRefresh={requestRefresh}/>}
         </Fragment>
     )
 

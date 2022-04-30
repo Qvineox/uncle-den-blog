@@ -52,30 +52,33 @@ router.get('/:id', async (req, res) => {
     }
 )
 
-router.post('/add_post', async (req, res) => {
+
+router.post('/insert_post', async (req, res) => {
     const Posts = require('../server').Posts
 
-    const newPost = await Posts.create({
-        type: req.body.postType,
-        content: req.body.postContent,
-        adventureId: req.body.adventureId
-    })
+    let post
 
-    res.status(200).json(newPost)
-})
+    if (req.body.postId) {
+        post = await Posts.update(
+            {
+                content: req.body.postContent
+            }, {
+                where: {id: req.body.postId}
+            })
 
-
-router.post('/edit_post_content', async (req, res) => {
-    const Posts = require('../server').Posts
-
-    const editPost = await Posts.update(
-        {
-            content: req.body.postContent
-        }, {
-            where: {id: req.body.postId}
+        res.status(200).json(post)
+    } else {
+        post = await Posts.create({
+            type: req.body.postType,
+            order: req.body.postOrder,
+            content: req.body.postContent,
+            adventureId: req.body.adventureId
         })
 
-    res.status(200).json(editPost)
+        res.status(201).json(post)
+    }
+
+
 })
 
 

@@ -1,31 +1,18 @@
 import {Fragment} from "react";
 import {Dropdown} from "react-bootstrap";
 import {ACTIONS} from "../blocks";
-import {createPost} from "./scripts/postHandlers";
+import {ImagePost, TextPost} from "../../../../classes/data/post.classes";
 
-
-export default function EditorPanel({articleId, requestRefresh}) {
+export default function EditorPanel({adventureId, requestRefresh}) {
     function handlePost({action}) {
-        let newPost = {
-            type: action,
-            content: {}
-        }
+        let newPost
 
         switch (action) {
             case ACTIONS.ADD_TEXT_BLOCK:
-                newPost.content = {
-                    description: "Описание отсутствует.",
-                }
-
+                newPost = new TextPost()
                 break
             case ACTIONS.ADD_IMAGE_BLOCK:
-                newPost.content = {
-                    description: "Описание отсутствует.",
-                    inverted: false,
-                    image: '/assets/images/600x200-placeholder.png',
-                    alt: 'Изображение отсутствует',
-                }
-
+                newPost = new ImagePost()
                 break
             case ACTIONS.ADD_MAP_BLOCK:
                 newPost.content = {
@@ -84,7 +71,10 @@ export default function EditorPanel({articleId, requestRefresh}) {
                 return null
         }
 
-        createPost(newPost.type, newPost.content, articleId)
+        newPost.dbInsert(adventureId).then(event => {
+            console.debug(event)
+        })
+
         requestRefresh()
     }
 
@@ -99,7 +89,8 @@ export default function EditorPanel({articleId, requestRefresh}) {
                     <Dropdown.Menu>
                         <Dropdown.Item
                             onClick={() => handlePost({action: ACTIONS.ADD_TEXT_BLOCK})}>Текст</Dropdown.Item>
-                        <Dropdown.Item onClick={() => handlePost({action: ACTIONS.ADD_IMAGE_BLOCK})}>Изображение</Dropdown.Item>
+                        <Dropdown.Item
+                            onClick={() => handlePost({action: ACTIONS.ADD_IMAGE_BLOCK})}>Изображение</Dropdown.Item>
                         <Dropdown.Item disabled>Группа изображений</Dropdown.Item>
                         <Dropdown.Divider/>
                         <Dropdown.Item
