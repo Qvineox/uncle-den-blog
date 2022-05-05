@@ -1,11 +1,11 @@
 import {Fragment, useState} from "react";
 import {Button, Form, Offcanvas} from "react-bootstrap";
-import {createPost, updatePost} from "../scripts/postHandlers";
 
 import '../../styles/admin/editors.scss'
+import {insertPost} from "../../scripts/dataHandlers";
 
-export default function LinkPostEditor({id, content, show, setShow, refreshData}) {
-    const [formData, setFormData] = useState(content)
+export default function LinkPostEditor({post, show, setShow, refreshData}) {
+    const [formData, setFormData] = useState(post.content)
 
     const handleChange = (evt) => {
         const name = evt.target.name;
@@ -19,14 +19,17 @@ export default function LinkPostEditor({id, content, show, setShow, refreshData}
     }
 
     const handleReset = () => {
-        setFormData(content)
+        setFormData(post.content)
     }
 
     const handleSubmit = () => {
-        if (id) {
-            updatePost(id, formData)
-        } else {
-            createPost('link', formData)
+        if (post.id) {
+            const payload = {
+                id: post.id,
+                content: formData
+            }
+
+            insertPost(payload)
         }
 
         refreshData()

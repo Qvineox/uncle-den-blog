@@ -2,9 +2,10 @@ import {Fragment, useState} from "react";
 import {createPost, updatePost} from "../scripts/postHandlers";
 import {MapPostMarkerEditor} from "./mapPostEditor"
 import {Button, Card, Col, ListGroup, Offcanvas, Row} from "react-bootstrap";
+import {insertPost} from "../../scripts/dataHandlers";
 
-export default function MapHelperPostEditor({id, content, show, setShow, refreshData}) {
-    const [formData, setFormData] = useState(content)
+export default function MapHelperPostEditor({post, show, setShow, refreshData}) {
+    const [formData, setFormData] = useState(post.content)
     const [selectedItem, setSelectedItem] = useState(null)
 
     const addMarkerItem = () => {
@@ -32,14 +33,17 @@ export default function MapHelperPostEditor({id, content, show, setShow, refresh
     }
 
     const handleReset = () => {
-        setFormData(content)
+        setFormData(post.content)
     }
 
     const handleSubmit = (evt) => {
-        if (id) {
-            updatePost(id, formData)
-        } else {
-            createPost('map-helper', formData)
+        if (post.id) {
+            const payload = {
+                id: post.id,
+                content: formData
+            }
+
+            insertPost(payload)
         }
 
         refreshData()

@@ -1,9 +1,10 @@
 import {Fragment, useEffect, useState} from "react";
 import {createPost, updatePost} from "../scripts/postHandlers";
 import {Button, Card, Col, Form, ListGroup, Modal, Offcanvas, Row} from "react-bootstrap";
+import {insertPost} from "../../scripts/dataHandlers";
 
-export default function CarouselPostEditor({id, content, show, setShow, refreshData}) {
-    const [formData, setFormData] = useState(content)
+export default function CarouselPostEditor({post, show, setShow, refreshData}) {
+    const [formData, setFormData] = useState(post.content)
     const [selectedItem, setSelectedItem] = useState(null)
 
     const addCarouselItem = () => {
@@ -30,14 +31,17 @@ export default function CarouselPostEditor({id, content, show, setShow, refreshD
     }
 
     const handleReset = () => {
-        setFormData(content)
+        setFormData(post.content)
     }
 
     const handleSubmit = (evt) => {
-        if (id) {
-            updatePost(id, formData)
-        } else {
-            createPost('carousel', formData)
+        if (post.id) {
+            const payload = {
+                id: post.id,
+                content: formData
+            }
+
+            insertPost(payload)
         }
 
         refreshData()
@@ -191,6 +195,7 @@ const CarouselPostItemEditor = ({formData, setFormData, selectedItem, setSelecte
                 </Form.Group>
 
                 {/* TODO: add image form support */}
+
             </Modal.Body>
 
             <Modal.Footer>

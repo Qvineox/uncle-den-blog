@@ -3,14 +3,13 @@ import {Accordion, Button, Carousel} from "react-bootstrap";
 import {CustomMarker} from "../globe";
 import {GoogleMap, Marker, useJsApiLoader} from "@react-google-maps/api";
 import TextPostEditor from "./admin/editors/textPostEditor";
-import {deletePost} from "./admin/scripts/postHandlers";
 import AccordionPostEditor from "./admin/editors/accordionPostEditor";
 import CarouselPostEditor from "./admin/editors/carouselPostEditor";
 import {MapPostEditor} from "./admin/editors/mapPostEditor";
 import LinkPostEditor from "./admin/editors/linkPostEditor";
 import MapHelperPostEditor from "./admin/editors/mapHelperPostEditor";
 import ImagePostEditor from "./admin/editors/imageBlockEditor";
-import {ImagePost, TextPost} from "../../../classes/data/post.classes";
+import {deletePost} from "./scripts/dataHandlers";
 
 export const ACTIONS = {
     ADD_TEXT_BLOCK: 'text', // content
@@ -30,42 +29,41 @@ export const ACTIONS = {
 
 const isAdmin = localStorage.getItem('isAdmin') === 'true'
 
-export function ArticleBlock({type, content, order, id, requestRefresh}) {
+export function ArticleBlock({post, requestRefresh}) {
     const [block, setBlock] = useState(null)
 
     useEffect(() => {
-        createBlock(type, content)
+        createBlock()
     }, [])
 
-    function createBlock(type, content) {
-        switch (type) {
+    function createBlock() {
+        switch (post.type) {
             case ACTIONS.ADD_TEXT_BLOCK:
-                setBlock(<SimpleTextBlock postId={id} postOrder={order} postText={content.text} />)
+                setBlock(<SimpleTextBlock post={post}/>)
                 break
             case ACTIONS.ADD_IMAGE_BLOCK:
-                setBlock(<SimpleImageBlock
-                    postData={new ImagePost(id, order, content.isInverted, content.text, content.image.path)}/>)
+                setBlock(<SimpleImageBlock post={post}/>)
                 break
             case ACTIONS.ADD_LINK_BLOCK:
-                setBlock(<LinkButtonBlock id={id} content={content}/>)
+                setBlock(<LinkButtonBlock post={post}/>)
                 break
             case ACTIONS.ADD_MAP_BLOCK:
-                setBlock(<SimpleMapBlock id={id} content={content}/>)
+                setBlock(<SimpleMapBlock post={post}/>)
                 break
             case ACTIONS.ADD_MAP_HELPER_BLOCK:
-                setBlock(<HelperMapBlock id={id} content={content}/>)
+                setBlock(<HelperMapBlock post={post}/>)
                 break
             case ACTIONS.ADD_ACCORDION_BLOCK:
-                setBlock(<AccordionBlock id={id} content={content}/>)
+                setBlock(<AccordionBlock post={post}/>)
                 break
             case ACTIONS.ADD_CAROUSEL_BLOCK:
-                setBlock(<CarouselBlock id={id} content={content}/>)
+                setBlock(<CarouselBlock post={post}/>)
                 break
             default:
                 return null
         }
 
-        console.info('ADDING NEW BLOCK: ' + type)
+        console.info('ADDING NEW BLOCK: ' + post.type)
     }
 
     function deleteBlock(id) {
@@ -82,32 +80,23 @@ export function ArticleBlock({type, content, order, id, requestRefresh}) {
         )
     }
 
-    const SimpleTextBlock = ({postId, postOrder, postText}) => {
-        const [postData, setPostData] = useState(new TextPost(postId, postOrder, postText))
+    const SimpleTextBlock = ({post}) => {
+
         const [showEdit, setShowEdit] = useState(false)
 
         return (
             <Fragment>
                 <div className={"article-block text"}>
                     <p>
-                        {postData.content.text}
+                        {post.content.text}
                     </p>
                     {isAdmin &&
                         <Fragment>
                             <div className={"block-tooltip"}>
                                 <Button onClick={() => setShowEdit(true)} variant={"outline-light"}>Edit</Button>
-                                <Button onClick={() => {
-                                    postData.dbDelete().then(event => {
-                                        console.debug(event)
-                                    })
-
-                                    requestRefresh()
-                                }} variant={"outline-danger"}>Delete</Button>
+                                <Button onClick={() => deleteBlock(post.id)} variant={"outline-danger"}>Delete</Button>
                             </div>
-
-                            <TextPostEditor refreshData={requestRefresh}
-                                            postData={postData}
-                                            show={showEdit}
+                            <TextPostEditor refreshData={requestRefresh} post={post} show={showEdit}
                                             setShow={setShowEdit}/>
                         </Fragment>
                     }
@@ -116,26 +105,26 @@ export function ArticleBlock({type, content, order, id, requestRefresh}) {
         )
     }
 
-    const SimpleImageBlock = ({postData}) => {
+    const SimpleImageBlock = ({post}) => {
 
         const [showEdit, setShowEdit] = useState(false)
 
         return (
             <Fragment>
                 <div className={"article-block image"}>
-                    <div className={content.inverted ? "article-block image-right" : "article-block image-left"}>
+                    <div className={post.content.inverted ? "article-block image-right" : "article-block image-left"}>
                         <p>
-                            {postData.content.text}
+                            {post.content.description}
                         </p>
-                        <img src={postData.content.image.path} alt={postData.content.image.alt}/>
+                        <img src={`${process.env.REACT_APP_BACKEND_HOST}${post.content.image}`} alt={post.content.alt}/>
                     </div>
                     {isAdmin &&
                         <Fragment>
                             <div className={"block-tooltip"}>
                                 <Button onClick={() => setShowEdit(true)} variant={"outline-light"}>Edit</Button>
-                                <Button onClick={() => deleteBlock(id)} variant={"outline-danger"}>Delete</Button>
+                                <Button onClick={() => deleteBlock(post.id)} variant={"outline-danger"}>Delete</Button>
                             </div>
-                            <ImagePostEditor refreshData={requestRefresh} id={id} content={content} show={showEdit}
+                            <ImagePostEditor refreshData={requestRefresh} post={post} show={showEdit}
                                              setShow={setShowEdit}/>
                         </Fragment>
                     }
@@ -144,19 +133,19 @@ export function ArticleBlock({type, content, order, id, requestRefresh}) {
         )
     }
 
-    const CarouselBlock = ({id, content}) => {
+    const CarouselBlock = ({post}) => {
 
         const [showEdit, setShowEdit] = useState(false)
 
         return (
             <div className={"article-block"}>
                 <Carousel className={"article-block"}>
-                    {content.carouselItems.map((item, i) => {
+                    {post.content.carouselItems.map((item, i) => {
                         return (
                             <Carousel.Item key={i} interval={item.interval}>
                                 <img
                                     className="d-block w-100"
-                                    src={process.env.PUBLIC_URL + item.image}
+                                    src={`${process.env.REACT_APP_BACKEND_HOST}${item.image}`}
                                     alt={item.title}
                                 />
                                 <Carousel.Caption>
@@ -170,21 +159,21 @@ export function ArticleBlock({type, content, order, id, requestRefresh}) {
                 {isAdmin && <Fragment>
                     <div className={"block-tooltip"}>
                         <Button onClick={() => setShowEdit(true)} variant={"outline-light"}>Edit</Button>
-                        <Button onClick={() => deleteBlock(id)} variant={"outline-danger"}>Delete</Button>
+                        <Button onClick={() => deleteBlock(post.id)} variant={"outline-danger"}>Delete</Button>
                     </div>
-                    <CarouselPostEditor refreshData={requestRefresh} id={id} content={content} show={showEdit}
+                    <CarouselPostEditor refreshData={requestRefresh} post={post} show={showEdit}
                                         setShow={setShowEdit}/>
                 </Fragment>}
             </div>
         )
     }
 
-    const AccordionBlock = ({id, content}) => {
+    const AccordionBlock = ({post}) => {
         const [showEdit, setShowEdit] = useState(false)
 
         return (
             <Accordion className={"article-block"} defaultActiveKey="0">
-                {content.accordionItems.map((item, i) => {
+                {post.content.accordionItems.map((item, i) => {
                     return (
                         <Fragment key={i}>
                             <Accordion.Item eventKey={i}>
@@ -197,16 +186,16 @@ export function ArticleBlock({type, content, order, id, requestRefresh}) {
                 {isAdmin && <Fragment>
                     <div className={"block-tooltip"}>
                         <Button onClick={() => setShowEdit(true)} variant={"outline-light"}>Edit</Button>
-                        <Button onClick={() => deleteBlock(id)} variant={"outline-danger"}>Delete</Button>
+                        <Button onClick={() => deleteBlock(post.id)} variant={"outline-danger"}>Delete</Button>
                     </div>
-                    <AccordionPostEditor refreshData={requestRefresh} id={id} content={content} show={showEdit}
+                    <AccordionPostEditor refreshData={requestRefresh} post={post} show={showEdit}
                                          setShow={setShowEdit}/>
                 </Fragment>}
             </Accordion>
         )
     }
 
-    const SimpleMapBlock = ({id, content}) => {
+    const SimpleMapBlock = ({post}) => {
         const mapRef = useRef(undefined)
 
         const [mapItems, setMapItems] = useState([])
@@ -215,7 +204,7 @@ export function ArticleBlock({type, content, order, id, requestRefresh}) {
         useEffect(() => {
             let mapLocations = []
 
-            content.markers.map((item, i) => {
+            post.content.markers.map((item, i) => {
                 let position = {
                     lat: parseFloat(item.position.lat),
                     lng: parseFloat(item.position.lng)
@@ -229,7 +218,7 @@ export function ArticleBlock({type, content, order, id, requestRefresh}) {
             })
 
             setMapItems(mapLocations)
-        }, [content.markers])
+        }, [post.content.markers])
 
         const onLoad = useCallback(function callback(map) {
             mapRef.current = map
@@ -245,14 +234,17 @@ export function ArticleBlock({type, content, order, id, requestRefresh}) {
 
         return (
             <Fragment>
-                <div className="article-block map-block simple" style={{height: `${content.height}vh`}}>
+                <div className="article-block map-block simple" style={{height: `${post.content.height}vh`}}>
                     {isLoaded ?
                         <GoogleMap
                             mapContainerStyle={{
                                 width: '100%', height: '100%'
                             }}
-                            center={{lat: parseFloat(content.center.lat), lng: parseFloat(content.center.lng)}}
-                            zoom={content.zoom}
+                            center={{
+                                lat: parseFloat(post.content.center.lat),
+                                lng: parseFloat(post.content.center.lng)
+                            }}
+                            zoom={post.content.zoom}
                             onLoad={onLoad}
                             onUnmount={onUnmount}>
                             {mapItems}
@@ -265,9 +257,9 @@ export function ArticleBlock({type, content, order, id, requestRefresh}) {
                     {isAdmin && <Fragment>
                         <div className={"block-tooltip"}>
                             <Button onClick={() => setShowEdit(true)} variant={"outline-light"}>Edit</Button>
-                            <Button onClick={() => deleteBlock(id)} variant={"outline-danger"}>Delete</Button>
+                            <Button onClick={() => deleteBlock(post.id)} variant={"outline-danger"}>Delete</Button>
                         </div>
-                        <MapPostEditor refreshData={requestRefresh} id={id} content={content} show={showEdit}
+                        <MapPostEditor refreshData={requestRefresh} post={post} show={showEdit}
                                        setShow={setShowEdit}/>
                     </Fragment>}
                 </div>
@@ -275,7 +267,7 @@ export function ArticleBlock({type, content, order, id, requestRefresh}) {
         )
     }
 
-    const HelperMapBlock = ({id, content}) => {
+    const HelperMapBlock = ({post}) => {
         const mapRef = useRef(undefined)
         const [accordionItems, setAccordionItems] = useState(null)
         const [mapItems, setMapItems] = useState(null)
@@ -287,7 +279,7 @@ export function ArticleBlock({type, content, order, id, requestRefresh}) {
             let accordionItems = []
             let mapLocations = []
 
-            content.markers.map((item, i) => {
+            post.content.markers.map((item, i) => {
                 accordionItems.push(
                     <Fragment key={i}>
                         <Accordion.Item onClick={() => {
@@ -304,11 +296,11 @@ export function ArticleBlock({type, content, order, id, requestRefresh}) {
 
             setAccordionItems(accordionItems)
             setMapItems(mapLocations)
-        }, [content.markers])
+        }, [post.content.markers])
 
         useEffect(() => {
-            mapRef.current?.panTo(content.markers[currentItem].position)
-        }, [content.markers, currentItem])
+            mapRef.current?.panTo(post.content.markers[currentItem].position)
+        }, [post.content.markers, currentItem])
 
         const onLoad = useCallback(function callback(map) {
             mapRef.current = map
@@ -323,7 +315,7 @@ export function ArticleBlock({type, content, order, id, requestRefresh}) {
         })
 
         return (<Fragment>
-            <div className="article-block map-block helper" style={{height: `${content.height}vh`}}>
+            <div className="article-block map-block helper" style={{height: `${post.content.height}vh`}}>
                 <div className={"helper"}>
                     <Accordion style={{height: '100%'}} flush defaultActiveKey={0}>
                         {accordionItems}
@@ -334,8 +326,8 @@ export function ArticleBlock({type, content, order, id, requestRefresh}) {
                         mapContainerStyle={{
                             width: '100%', height: '100%'
                         }}
-                        center={content.markers[0].position}
-                        zoom={content.zoom}
+                        center={post.content.markers[0].position}
+                        zoom={post.content.zoom}
                         onLoad={onLoad}
                         onUnmount={onUnmount}>
                         {mapItems?.map((item, i) => {
@@ -350,36 +342,38 @@ export function ArticleBlock({type, content, order, id, requestRefresh}) {
                 {isAdmin && <Fragment>
                     <div className={"block-tooltip"}>
                         <Button onClick={() => setShowEdit(true)} variant={"outline-light"}>Edit</Button>
-                        <Button onClick={() => deleteBlock(id)} variant={"outline-danger"}>Delete</Button>
+                        <Button onClick={() => deleteBlock(post.id)} variant={"outline-danger"}>Delete</Button>
                     </div>
-                    <MapHelperPostEditor refreshData={requestRefresh} id={id} content={content} show={showEdit}
+                    <MapHelperPostEditor refreshData={requestRefresh} post={post}
+                                         show={showEdit}
                                          setShow={setShowEdit}/>
                 </Fragment>}
             </div>
         </Fragment>)
     }
 
-    const LinkButtonBlock = ({id, content}) => {
+    const LinkButtonBlock = ({post}) => {
 
         const [showEdit, setShowEdit] = useState(false)
 
         return (
             <Fragment>
                 <div className={"article-block article-block-link"}>
-                    <img className="article-block-link__image" src={process.env.PUBLIC_URL + content.image}/>
+                    <img className="article-block-link__image"
+                         src={`${process.env.REACT_APP_BACKEND_HOST}${post.content.image}`}/>
                     <div className="article-block-link__text">
-                        <h1>{content.title}</h1>
+                        <h1>{post.content.title}</h1>
                         <h5>
                             <hr/>
-                            {content.description}
+                            {post.content.description}
                         </h5>
                     </div>
                     {isAdmin && <Fragment>
                         <div className={"block-tooltip"}>
                             <Button onClick={() => setShowEdit(true)} variant={"outline-light"}>Edit</Button>
-                            <Button onClick={() => deleteBlock(id)} variant={"outline-danger"}>Delete</Button>
+                            <Button onClick={() => deleteBlock(post.id)} variant={"outline-danger"}>Delete</Button>
                         </div>
-                        <LinkPostEditor refreshData={requestRefresh} id={id} content={content} show={showEdit}
+                        <LinkPostEditor refreshData={requestRefresh} post={post} show={showEdit}
                                         setShow={setShowEdit}/>
                     </Fragment>}
                 </div>

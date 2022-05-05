@@ -1,18 +1,33 @@
 import {Fragment} from "react";
-import {Dropdown} from "react-bootstrap";
+import {Button, Dropdown} from "react-bootstrap";
 import {ACTIONS} from "../blocks";
-import {ImagePost, TextPost} from "../../../../classes/data/post.classes";
+import {createPost} from "./scripts/postHandlers";
+import {insertPost} from "../scripts/dataHandlers";
+
 
 export default function EditorPanel({adventureId, requestRefresh}) {
     function handlePost({action}) {
-        let newPost
+        let newPost = {
+            type: action,
+            content: {},
+            adventureId: adventureId
+        }
 
         switch (action) {
             case ACTIONS.ADD_TEXT_BLOCK:
-                newPost = new TextPost()
+                newPost.content = {
+                    text: "Описание отсутствует.",
+                }
+
                 break
             case ACTIONS.ADD_IMAGE_BLOCK:
-                newPost = new ImagePost()
+                newPost.content = {
+                    description: "Описание отсутствует.",
+                    inverted: false,
+                    image: '/public/images/placeholders/600x200-placeholder.png',
+                    alt: 'Изображение отсутствует',
+                }
+
                 break
             case ACTIONS.ADD_MAP_BLOCK:
                 newPost.content = {
@@ -31,7 +46,7 @@ export default function EditorPanel({adventureId, requestRefresh}) {
             case ACTIONS.ADD_LINK_BLOCK:
                 newPost.content = {
                     link: "#",
-                    image: '/assets/images/600x200-placeholder.png',
+                    image: '/public/images/placeholders/600x200-placeholder.png',
                     title: "Заголовок отсутствует.",
                     description: "Описание отсутствует.",
                 }
@@ -42,6 +57,10 @@ export default function EditorPanel({adventureId, requestRefresh}) {
                     accordionItems: [
                         {
                             title: 'Новый заголовок 1',
+                            description: 'Новое описание 1'
+                        },
+                        {
+                            title: 'Новый заголовок 2',
                             description: 'Новое описание 2'
                         },
                     ]
@@ -53,14 +72,14 @@ export default function EditorPanel({adventureId, requestRefresh}) {
                     carouselItems: [
                         {
                             title: 'Новый заголовок 1',
-                            description: 'Новое описание 2',
-                            image: '/assets/images/1600x600-placeholder.png',
+                            description: 'Новое описание 1',
+                            image: '/public/images/placeholders/1600x600-placeholder.png',
                             interval: 5000
                         },
                         {
                             title: 'Новый заголовок 2',
                             description: 'Новое описание 2',
-                            image: '/assets/images/1600x600-placeholder.png',
+                            image: '/public/images/placeholders/1600x600-placeholder.png',
                             interval: 5000
                         },
                     ]
@@ -71,10 +90,7 @@ export default function EditorPanel({adventureId, requestRefresh}) {
                 return null
         }
 
-        newPost.dbInsert(adventureId).then(event => {
-            console.debug(event)
-        })
-
+        insertPost(newPost)
         requestRefresh()
     }
 
@@ -89,8 +105,7 @@ export default function EditorPanel({adventureId, requestRefresh}) {
                     <Dropdown.Menu>
                         <Dropdown.Item
                             onClick={() => handlePost({action: ACTIONS.ADD_TEXT_BLOCK})}>Текст</Dropdown.Item>
-                        <Dropdown.Item
-                            onClick={() => handlePost({action: ACTIONS.ADD_IMAGE_BLOCK})}>Изображение</Dropdown.Item>
+                        <Dropdown.Item onClick={() => handlePost({action: ACTIONS.ADD_IMAGE_BLOCK})}>Изображение</Dropdown.Item>
                         <Dropdown.Item disabled>Группа изображений</Dropdown.Item>
                         <Dropdown.Divider/>
                         <Dropdown.Item

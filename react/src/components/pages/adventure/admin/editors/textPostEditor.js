@@ -1,12 +1,11 @@
 import {Fragment, useState} from "react";
 import {Button, Form, Offcanvas} from "react-bootstrap";
-import {createPost} from "../scripts/postHandlers";
 
 import '../../styles/admin/editors.scss'
-import {TextPost} from "../../../../../classes/data/post.classes";
+import {insertPost} from "../../scripts/dataHandlers";
 
-export default function TextPostEditor({postData, show, setShow, refreshData}) {
-    const [formData, setFormData] = useState(postData.content)
+export default function TextPostEditor({post, show, setShow, refreshData}) {
+    const [formData, setFormData] = useState(post.content)
 
     const handleChange = (evt) => {
         const name = evt.target.name;
@@ -20,19 +19,21 @@ export default function TextPostEditor({postData, show, setShow, refreshData}) {
     }
 
     const handleReset = () => {
-        setFormData(postData.content)
+        setFormData(post.content)
     }
 
-    const handleSubmit = () => {
-        if (postData.id) {
-            new TextPost(postData.id, postData.order, formData.text).dbInsert().then(event => {
-                console.debug(event)
-            })
-        } else {
-            createPost('text', formData)
+    const handleSubmit = (evt) => {
+        if (post.id) {
+            const payload = {
+                id: post.id,
+                content: formData
+            }
+
+            insertPost(payload)
         }
 
         refreshData()
+        evt.preventDefault()
     }
 
     const handleClose = () => {

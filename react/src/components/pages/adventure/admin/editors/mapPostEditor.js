@@ -3,9 +3,10 @@ import {createPost, updatePost} from "../scripts/postHandlers";
 import {Button, Card, Col, Form, ListGroup, Modal, Offcanvas, Row} from "react-bootstrap";
 
 import '../../styles/admin/editors.scss'
+import {insertPost} from "../../scripts/dataHandlers";
 
-export function MapPostEditor({id, content, show, setShow, refreshData}) {
-    const [formData, setFormData] = useState(content)
+export function MapPostEditor({post, show, setShow, refreshData}) {
+    const [formData, setFormData] = useState(post.content)
     const [selectedItem, setSelectedItem] = useState(null)
 
     const addMarkerItem = () => {
@@ -30,20 +31,23 @@ export function MapPostEditor({id, content, show, setShow, refreshData}) {
     }
 
     const handleReset = () => {
-        setFormData(content)
+        setFormData(post.content)
     }
 
     const handleSubmit = (evt) => {
-        if (id) {
-            let data = {
-                ...formData, zoom: parseInt(formData.zoom), center: {
-                    lat: parseFloat(formData.center.lat), lng: parseFloat(formData.center.lng),
+        if (post.id) {
+            let payload = {
+                id: post.id,
+                content: {
+                    ...formData,
+                    zoom: parseInt(formData.zoom),
+                    center: {
+                        lat: parseFloat(formData.center.lat), lng: parseFloat(formData.center.lng)
+                    }
                 }
             }
 
-            updatePost(id, data)
-        } else {
-            createPost('map', formData)
+            insertPost(payload)
         }
 
         refreshData()
@@ -259,7 +263,6 @@ export const MapPostMarkerEditor = ({formData, setFormData, selectedItem, setSel
         handleClose()
     }
 
-    // TODO: fix form for new marker addition
     return (<Modal show={show} onHide={handleClose} className={'modal-form'}>
         <Modal.Header closeButton>
             <Modal.Title className={'modal-form__title'}>Изменение маркера</Modal.Title>
@@ -301,6 +304,8 @@ export const MapPostMarkerEditor = ({formData, setFormData, selectedItem, setSel
                               value={itemData?.position.lng}/>
             </Form.Group>
         </Modal.Body>
+
+        {/* TODO: Add image form */}
 
         <Modal.Footer>
             <Button variant="secondary" onClick={handleClose}>

@@ -1,11 +1,11 @@
 import {Fragment, useEffect, useState} from "react";
 import {Button, Form, Offcanvas} from "react-bootstrap";
-import {updateImagePost} from "../scripts/postHandlers";
 
 import '../../styles/admin/editors.scss'
+import {insertPost, uploadImage} from "../../scripts/dataHandlers";
 
-export default function ImagePostEditor({id, content, show, setShow, refreshData}) {
-    const [formData, setFormData] = useState(content)
+export default function ImagePostEditor({post, show, setShow, refreshData}) {
+    const [formData, setFormData] = useState(post.content)
 
     const [images, setImages] = useState([])
     const [imageURLs, setImagesURLs] = useState([])
@@ -14,11 +14,9 @@ export default function ImagePostEditor({id, content, show, setShow, refreshData
         const name = evt.target.name;
         const value = evt.target.value;
 
-        setFormData(values => (
-            {
-                ...values,
-                [name]: value
-            }))
+        setFormData(values => ({
+            ...values, [name]: value
+        }))
     }
 
     const handleImage = (evt) => {
@@ -26,15 +24,30 @@ export default function ImagePostEditor({id, content, show, setShow, refreshData
     }
 
     const handleReset = () => {
-        setFormData(content)
+        setFormData(post.content)
     }
 
-    const handleSubmit = () => {
-        if (id) {
-            updateImagePost(id, formData, images)
+    const handleSubmit = (evt) => {
+
+        if (post.id && images.length > 0) {
+            console.log(images[0])
+            uploadImage(images[0], post.id)
+                .catch(error => console.log(error))
+                .then(result => {
+                    console.log(result.data)
+
+                    const payload = {
+                        id: post.id, content: {
+                            ...formData, image: result.data.filePath, alt: result.data.fileAlt,
+                        }
+                    }
+
+                    insertPost(payload)
+                })
         }
 
         refreshData()
+        evt.preventDefault()
     }
 
     const handleClose = () => {
@@ -78,15 +91,13 @@ export default function ImagePostEditor({id, content, show, setShow, refreshData
                     </Form.Text>
                 </Form.Group>
 
-                {images.length > 0 &&
-                    <div className={"image-preview"}>
-                        <p>Загружаемые изображения</p>
-                        <div className={"image-preview__uploads"}>
-                            {imageURLs.map((imageSrc, index) => <img key={index} alt={`upload-${index}`}
-                                                                     src={imageSrc}/>)}
-                        </div>
+                {images.length > 0 && <div className={"image-preview"}>
+                    <p>Загружаемые изображения</p>
+                    <div className={"image-preview__uploads"}>
+                        {imageURLs.map((imageSrc, index) => <img key={index} alt={`upload-${index}`}
+                                                                 src={imageSrc}/>)}
                     </div>
-                }
+                </div>}
 
                 <hr className="post-editor__separator"/>
 

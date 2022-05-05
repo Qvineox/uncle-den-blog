@@ -52,34 +52,50 @@ router.get('/:id', async (req, res) => {
     }
 )
 
-
 router.post('/insert_post', async (req, res) => {
     const Posts = require('../server').Posts
 
     let post
 
-    if (req.body.postId) {
+    if (req.body.postId !== undefined) {
         post = await Posts.update(
             {
                 content: req.body.postContent
             }, {
                 where: {id: req.body.postId}
             })
-
-        res.status(200).json(post)
     } else {
         post = await Posts.create({
             type: req.body.postType,
-            order: req.body.postOrder,
             content: req.body.postContent,
             adventureId: req.body.adventureId
         })
-
-        res.status(201).json(post)
     }
 
-
+    res.status(200).json(post)
 })
+
+
+router.post('/upload_image', fileMiddleware.fields([
+        {name: 'postId', maxCount: 1},
+        {name: 'postImage', maxCount: 1}]),
+    (req, res) => {
+        if (req.files['postImage'].length > 0) {
+
+            const fileData = req.files['postImage'][0]
+
+            console.log(fileData)
+
+            const payload = {
+                filePath: `/${fileData.path.replaceAll('\\', '/')}`,
+                fileAlt: fileData.originalname
+            }
+
+            res.status(201).json(payload)
+        } else {
+            res.status(400)
+        }
+    })
 
 
 router.post('/edit_image_post', fileMiddleware.fields([

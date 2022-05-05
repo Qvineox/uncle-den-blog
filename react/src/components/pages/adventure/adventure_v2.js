@@ -78,11 +78,8 @@ export default function Adventure2(props) {
                              className={"adventure-body__content"}>
                             {adventureData.posts.map((item) => {
                                 return (
-                                    <ArticleBlock type={item.type}
+                                    <ArticleBlock post={item}
                                                   key={item.id}
-                                                  id={item.id}
-                                                  order={item.order}
-                                                  content={item.content}
                                                   requestRefresh={requestRefresh}/>
                                 )
                             })}

@@ -1,11 +1,11 @@
 import {Fragment, useEffect, useState} from "react";
 import {Button, Card, Col, Form, ListGroup, Modal, Offcanvas, Row} from "react-bootstrap";
-import {createPost, updatePost} from "../scripts/postHandlers";
 
 import '../../styles/admin/editors.scss'
+import {insertPost} from "../../scripts/dataHandlers";
 
-export default function AccordionPostEditor({id, content, show, setShow, refreshData}) {
-    const [formData, setFormData] = useState(content)
+export default function AccordionPostEditor({post, show, setShow, refreshData}) {
+    const [formData, setFormData] = useState(post.content)
     const [selectedItem, setSelectedItem] = useState(null)
 
     const addAccordionItem = () => {
@@ -30,14 +30,17 @@ export default function AccordionPostEditor({id, content, show, setShow, refresh
     }
 
     const handleReset = () => {
-        setFormData(content)
+        setFormData(post.content)
     }
 
     const handleSubmit = (evt) => {
-        if (id) {
-            updatePost(id, formData)
-        } else {
-            createPost('accordion', formData)
+        if (post.id) {
+            const payload = {
+                id: post.id,
+                content: formData
+            }
+
+            insertPost(payload)
         }
 
         refreshData()
