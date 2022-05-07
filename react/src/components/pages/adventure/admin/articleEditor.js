@@ -22,10 +22,28 @@ export default function EditorPanel({adventureId, requestRefresh}) {
                 break
             case ACTIONS.ADD_IMAGE_BLOCK:
                 newPost.content = {
-                    description: "Описание отсутствует.",
+                    text: "Описание отсутствует.",
                     inverted: false,
-                    image: '/public/images/placeholders/600x200-placeholder.png',
+                    path: '/public/images/placeholders/600x200-placeholder.png',
                     alt: 'Изображение отсутствует',
+                }
+
+                break
+            case ACTIONS.ADD_IMAGES_BLOCK:
+                newPost.content = {
+                    text: "Описание отсутствует.",
+                    images: [
+                        {
+                            path: '/public/images/placeholders/600x600-placeholder.png',
+                            alt: 'Изображение отсутствует',
+                            order: 0
+                        },
+                        {
+                            path: '/public/images/placeholders/600x600-placeholder.png',
+                            alt: 'Изображение отсутствует',
+                            order: 1
+                        },
+                    ]
                 }
 
                 break
@@ -106,7 +124,7 @@ export default function EditorPanel({adventureId, requestRefresh}) {
                         <Dropdown.Item
                             onClick={() => handlePost({action: ACTIONS.ADD_TEXT_BLOCK})}>Текст</Dropdown.Item>
                         <Dropdown.Item onClick={() => handlePost({action: ACTIONS.ADD_IMAGE_BLOCK})}>Изображение</Dropdown.Item>
-                        <Dropdown.Item disabled>Группа изображений</Dropdown.Item>
+                        <Dropdown.Item onClick={() => handlePost({action: ACTIONS.ADD_IMAGES_BLOCK})}>Группа изображений</Dropdown.Item>
                         <Dropdown.Divider/>
                         <Dropdown.Item
                             onClick={() => handlePost({action: ACTIONS.ADD_MAP_BLOCK})}>Карта</Dropdown.Item>

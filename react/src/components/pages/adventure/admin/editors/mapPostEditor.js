@@ -197,123 +197,123 @@ export function MapPostEditor({post, show, setShow, refreshData}) {
     </Fragment>)
 }
 
-export const MapPostMarkerEditor = ({formData, setFormData, selectedItem, setSelectedItem}) => {
-    const [show, setShow] = useState(false)
-    const [itemData, setItemData] = useState(null)
+    export const MapPostMarkerEditor = ({formData, setFormData, selectedItem, setSelectedItem}) => {
+        const [show, setShow] = useState(false)
+        const [itemData, setItemData] = useState(null)
 
-    useEffect(() => {
-        if (selectedItem !== null) {
-            setItemData(formData.markers[selectedItem])
-            setShow(true)
-        } else {
-            setShow(false)
-        }
-    }, [selectedItem])
-
-    const handleChange = (evt) => {
-        const name = evt.target.name;
-        const value = evt.target.value;
-
-        setItemData(values => ({
-            ...values, [name]: value
-        }))
-    }
-
-    const handleCoordinates = (evt) => {
-        const name = evt.target.name;
-        const value = evt.target.value;
-
-        if (name === 'latitude') {
-            if (value <= 90 && value >= -90) {
-                setItemData(values => ({
-                    ...values, position: {
-                        lat: value, lng: values.position.lng
-                    }
-                }))
+        useEffect(() => {
+            if (selectedItem !== null) {
+                setItemData(formData.markers[selectedItem])
+                setShow(true)
+            } else {
+                setShow(false)
             }
-        } else if (name === 'longitude') {
-            if (value <= 180 && value >= -180) {
-                setItemData(values => ({
-                    ...values, position: {
-                        lat: values.position.lat, lng: value
-                    }
-                }))
-            }
+        }, [selectedItem])
+
+        const handleChange = (evt) => {
+            const name = evt.target.name;
+            const value = evt.target.value;
+
+            setItemData(values => ({
+                ...values, [name]: value
+            }))
         }
 
-    }
+        const handleCoordinates = (evt) => {
+            const name = evt.target.name;
+            const value = evt.target.value;
 
-    const handleClose = () => {
-        setSelectedItem(null)
-    }
-
-    const handleSubmit = () => {
-        let items = formData.markers
-
-        items[selectedItem] = {
-            title: itemData.title, description: itemData.description, position: {
-                lat: parseFloat(itemData.position.lat), lng: parseFloat(itemData.position.lng),
+            if (name === 'latitude') {
+                if (value <= 90 && value >= -90) {
+                    setItemData(values => ({
+                        ...values, position: {
+                            lat: value, lng: values.position.lng
+                        }
+                    }))
+                }
+            } else if (name === 'longitude') {
+                if (value <= 180 && value >= -180) {
+                    setItemData(values => ({
+                        ...values, position: {
+                            lat: values.position.lat, lng: value
+                        }
+                    }))
+                }
             }
+
         }
 
-        setFormData(values => ({
-            ...values, markers: items
-        }))
+        const handleClose = () => {
+            setSelectedItem(null)
+        }
 
-        handleClose()
+        const handleSubmit = () => {
+            let items = formData.markers
+
+            items[selectedItem] = {
+                title: itemData.title, description: itemData.description, position: {
+                    lat: parseFloat(itemData.position.lat), lng: parseFloat(itemData.position.lng),
+                }
+            }
+
+            setFormData(values => ({
+                ...values, markers: items
+            }))
+
+            handleClose()
+        }
+
+        return (<Modal show={show} onHide={handleClose} className={'modal-form'}>
+            <Modal.Header closeButton>
+                <Modal.Title className={'modal-form__title'}>Изменение маркера</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <Form.Group className={"modal-form__form"}>
+                    <Form.Label className={"modal-form__form__label"}>Заголовок</Form.Label>
+                    <Form.Control className={"modal-form__form__text"}
+                                  onChange={handleChange}
+                                  name={"title"}
+                                  type={'text'}
+                                  value={itemData?.title}/>
+                </Form.Group>
+
+                <Form.Group className={"modal-form__form"}>
+                    <Form.Label className={"modal-form__form__label"}>Описание</Form.Label>
+                    <Form.Control className={"modal-form__form__text"}
+                                  onChange={handleChange}
+                                  name={"description"}
+                                  rows={3}
+                                  as={'textarea'}
+                                  value={itemData?.description}/>
+                </Form.Group>
+
+                <Form.Group className={"modal-form__form"}>
+                    <Form.Label className={"modal-form__form__label"}>Широта</Form.Label>
+                    <Form.Control className={"modal-form__form__text"}
+                                  onChange={handleCoordinates}
+                                  name={"latitude"}
+                                  type={'float'}
+                                  value={itemData?.position.lat}/>
+                </Form.Group>
+                <Form.Group className={"modal-form__form"}>
+                    <Form.Label className={"modal-form__form__label"}>Долгота</Form.Label>
+                    <Form.Control className={"modal-form__form__text"}
+                                  onChange={handleCoordinates}
+                                  name={"longitude"}
+                                  type={'float'}
+                                  value={itemData?.position.lng}/>
+                </Form.Group>
+            </Modal.Body>
+
+            {/* TODO: Add image form */}
+
+            <Modal.Footer>
+                <Button variant="secondary" onClick={handleClose}>
+                    Закрыть
+                </Button>
+                <Button variant="primary" onClick={handleSubmit}>
+                    Сохранить изменения
+                </Button>
+            </Modal.Footer>
+        </Modal>)
     }
-
-    return (<Modal show={show} onHide={handleClose} className={'modal-form'}>
-        <Modal.Header closeButton>
-            <Modal.Title className={'modal-form__title'}>Изменение маркера</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-            <Form.Group className={"modal-form__form"}>
-                <Form.Label className={"modal-form__form__label"}>Заголовок</Form.Label>
-                <Form.Control className={"modal-form__form__text"}
-                              onChange={handleChange}
-                              name={"title"}
-                              type={'text'}
-                              value={itemData?.title}/>
-            </Form.Group>
-
-            <Form.Group className={"modal-form__form"}>
-                <Form.Label className={"modal-form__form__label"}>Описание</Form.Label>
-                <Form.Control className={"modal-form__form__text"}
-                              onChange={handleChange}
-                              name={"description"}
-                              rows={3}
-                              as={'textarea'}
-                              value={itemData?.description}/>
-            </Form.Group>
-
-            <Form.Group className={"modal-form__form"}>
-                <Form.Label className={"modal-form__form__label"}>Широта</Form.Label>
-                <Form.Control className={"modal-form__form__text"}
-                              onChange={handleCoordinates}
-                              name={"latitude"}
-                              type={'float'}
-                              value={itemData?.position.lat}/>
-            </Form.Group>
-            <Form.Group className={"modal-form__form"}>
-                <Form.Label className={"modal-form__form__label"}>Долгота</Form.Label>
-                <Form.Control className={"modal-form__form__text"}
-                              onChange={handleCoordinates}
-                              name={"longitude"}
-                              type={'float'}
-                              value={itemData?.position.lng}/>
-            </Form.Group>
-        </Modal.Body>
-
-        {/* TODO: Add image form */}
-
-        <Modal.Footer>
-            <Button variant="secondary" onClick={handleClose}>
-                Закрыть
-            </Button>
-            <Button variant="primary" onClick={handleSubmit}>
-                Сохранить изменения
-            </Button>
-        </Modal.Footer>
-    </Modal>)
-}

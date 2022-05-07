@@ -208,5 +208,13 @@ $muted-color: grey;
       height: 15vh;
       width: auto;
     }
+
+    img.uploaded {
+      border: 5px solid lawngreen;
+    }
+
+    img.local {
+      border: 5px solid firebrick;
+    }
   }
 }

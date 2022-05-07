@@ -38,7 +38,7 @@ export default function ImagePostEditor({post, show, setShow, refreshData}) {
                     const payload = {
                         id: post.id, content: {
                             ...formData,
-                            image: result.data.images[0].filePath,
+                            path: result.data.images[0].filePath,
                             alt: result.data.images[0].fileAlt,
                         }
                     }
@@ -77,8 +77,8 @@ export default function ImagePostEditor({post, show, setShow, refreshData}) {
                 <Form.Group className={'post-editor__form'}>
                     <Form.Label className={'post-editor__form__label'}>Основной текст</Form.Label>
                     <Form.Control className={'post-editor__form_textarea'} onChange={handleChange}
-                                  name={"description"} rows={5} as="textarea"
-                                  value={formData.description}/>
+                                  name={"text"} rows={5} as="textarea"
+                                  value={formData.text}/>
 
                     {/* TODO: add .success .error .warning class modifications */}
                     <Form.Text className='post-editor__form__hint'>

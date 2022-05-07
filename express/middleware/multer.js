@@ -9,7 +9,7 @@ const storage = multer.diskStorage({
         // TODO: add non-post image uploads  (image middleware end-point here)
     },
     filename(req, file, callback) {
-        callback(null, `post_id-${req.body.postId};${file.originalname}`)
+        callback(null, file.originalname)
     }
 })
 
