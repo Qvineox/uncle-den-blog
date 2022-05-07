@@ -30,23 +30,26 @@ export default function ImagePostEditor({post, show, setShow, refreshData}) {
     const handleSubmit = (evt) => {
 
         if (post.id && images.length > 0) {
-            console.log(images[0])
-            uploadImage(images[0], post.id)
+            uploadImage(images, post.id)
                 .catch(error => console.log(error))
                 .then(result => {
                     console.log(result.data)
 
                     const payload = {
                         id: post.id, content: {
-                            ...formData, image: result.data.filePath, alt: result.data.fileAlt,
+                            ...formData,
+                            image: result.data.images[0].filePath,
+                            alt: result.data.images[0].fileAlt,
                         }
                     }
 
                     insertPost(payload)
+                        .catch(error => console.log(error))
+                        .then(refreshData())
                 })
         }
 
-        refreshData()
+
         evt.preventDefault()
     }
 
@@ -85,7 +88,7 @@ export default function ImagePostEditor({post, show, setShow, refreshData}) {
 
                 <Form.Group className={"modal-form__form"}>
                     <Form.Label className={"modal-form__form__label"}>Изображение</Form.Label>
-                    <Form.Control className={'post-editor__form_image'} multiple type="file" onChange={handleImage}/>
+                    <Form.Control className={'post-editor__form_image'} type="file" onChange={handleImage}/>
                     <Form.Text className='post-editor__form__hint'>
                         Изображение с устройства.
                     </Form.Text>

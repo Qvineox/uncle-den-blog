@@ -76,51 +76,27 @@ router.post('/insert_post', async (req, res) => {
 })
 
 
-router.post('/upload_image', fileMiddleware.fields([
+router.post('/upload_images', fileMiddleware.fields([
         {name: 'postId', maxCount: 1},
-        {name: 'postImage', maxCount: 1}]),
+        {name: 'postImages', maxCount: 10}]),
     (req, res) => {
-        if (req.files['postImage'].length > 0) {
+        if (req.files['postImages'].length > 0) {
 
-            const fileData = req.files['postImage'][0]
-
-            console.log(fileData)
-
-            const payload = {
-                filePath: `/${fileData.path.replaceAll('\\', '/')}`,
-                fileAlt: fileData.originalname
+            let payload = {
+                images: []
             }
+
+            req.files['postImages'].forEach(fileData => {
+                payload.images.push({
+                    filePath: `/${fileData.path.replaceAll('\\', '/')}`,
+                    fileAlt: fileData.originalname
+                })
+            })
 
             res.status(201).json(payload)
         } else {
             res.status(400)
         }
-    })
-
-
-router.post('/edit_image_post', fileMiddleware.fields([
-        {name: 'postId', maxCount: 1},
-        {name: 'postDescription', maxCount: 1},
-        {name: 'postImageInverted', maxCount: 1},
-        {name: 'postImage', maxCount: 1}]),
-    async (req, res) => {
-        const Posts = require('../server').Posts
-
-        const savedImage = req.files['postImage'][0]
-
-        const editPost = await Posts.update(
-            {
-                content: {
-                    description: req.body.postDescription,
-                    alt: savedImage.originalname,
-                    image: savedImage.path,
-                    inverted: req.body.postImageInverted === 'true'
-                }
-            }, {
-                where: {id: req.body.postId}
-            })
-
-        res.status(200).json(editPost)
     })
 
 

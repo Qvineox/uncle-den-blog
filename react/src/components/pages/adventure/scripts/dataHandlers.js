@@ -20,13 +20,7 @@ function insertPost({id, content, type, adventureId}) {
         }
     }
 
-    axios.post(`${process.env.REACT_APP_BACKEND_HOST}/adventures/insert_post`, payload).then(result => {
-        console.debug(result)
-    }).catch(error => {
-
-        // TODO: error handling
-        console.debug(error)
-    })
+    return axios.post(`${process.env.REACT_APP_BACKEND_HOST}/adventures/insert_post`, payload)
 }
 
 
@@ -44,14 +38,17 @@ function deletePost(id) {
     })
 }
 
-function uploadImage(file, id) {
+function uploadImages(files, id) {
     let payload = new FormData()
     payload.append('postId', id)
-    payload.append('postImage', file, file.name)
 
-    return axios.post(`${process.env.REACT_APP_BACKEND_HOST}/adventures/upload_image`, payload, {
+    files.forEach(file => {
+        payload.append('postImages', file)
+    })
+
+    return axios.post(`${process.env.REACT_APP_BACKEND_HOST}/adventures/upload_images`, payload, {
         headers: {
-            'content-type': 'multipart/form-data' // do not forget this
+            'content-type': 'multipart/form-data'
         }
     })
 }
@@ -67,5 +64,5 @@ class HandlerNotification {
 module.exports = {
     insertPost,
     deletePost,
-    uploadImage
+    uploadImage: uploadImages
 }
