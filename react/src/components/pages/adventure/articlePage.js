@@ -2,13 +2,15 @@ import {Fragment, useEffect, useRef, useState} from "react";
 import {useParams} from "react-router-dom";
 import {ArticleBlock} from "./blocks";
 
-import './styles/adventure.css'
 import AdventureMap from "./adventureMap";
 import EditorPanel from "./admin/articleEditor";
 
+// styles
+import '../../styles/articles/article-page.scss'
+
 const isAdmin = localStorage.getItem('isAdmin') === 'true'
 
-export default function Adventure2(props) {
+export default function Article(props) {
 
     // adventure state managing
     const [adventureData, setAdventureData] = useState({
@@ -66,16 +68,16 @@ export default function Adventure2(props) {
         <Fragment>
             {adventureData.isLoaded ?
                 <Fragment>
-                    <div className={'adventure-header'}>
+                    <div className={'article-header'}>
                         <h2>{adventureData.title}</h2>
                         <h3>{adventureData.description}</h3>
                     </div>
-                    <div className={"adventure-body"}>
-                        <div className={"adventure-body__map"}>
+                    <div className={"article-body"}>
+                        <div className={"article-body__map"}>
                             <AdventureMap mapData={adventureData.map} scrollPosition={scrollPosition}/>
                         </div>
                         <div onScroll={() => scrollEffect(scrollPosition)} ref={articleContent}
-                             className={"adventure-body__content"}>
+                             className={"article-body__posts"}>
                             {adventureData.posts.map((item) => {
                                 return (
                                     <ArticleBlock post={item}

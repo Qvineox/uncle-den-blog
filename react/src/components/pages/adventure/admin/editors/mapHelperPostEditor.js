@@ -1,8 +1,9 @@
 import {Fragment, useState} from "react";
-import {createPost, updatePost} from "../scripts/postHandlers";
 import {MapPostMarkerEditor} from "./mapPostEditor"
 import {Button, Card, Col, ListGroup, Offcanvas, Row} from "react-bootstrap";
-import {insertPost} from "../../scripts/dataHandlers";
+import {insertPost} from "../../../../../scripts/dataHandlers";
+
+import '../../../../styles/admin/post-editors.scss'
 
 export default function MapHelperPostEditor({post, show, setShow, refreshData}) {
     const [formData, setFormData] = useState(post.content)

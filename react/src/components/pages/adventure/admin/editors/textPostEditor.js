@@ -1,8 +1,8 @@
 import {Fragment, useState} from "react";
 import {Button, Form, Offcanvas} from "react-bootstrap";
 
-import '../../styles/admin/editors.scss'
-import {insertPost} from "../../scripts/dataHandlers";
+import '../../../../styles/admin/post-editors.scss'
+import {insertPost} from "../../../../../scripts/dataHandlers";
 
 export default function TextPostEditor({post, show, setShow, refreshData}) {
     const [formData, setFormData] = useState(post.content)

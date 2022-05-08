@@ -1,8 +1,8 @@
 import {Fragment, useEffect, useState} from "react";
 import {Button, Card, Col, Form, ListGroup, Modal, Offcanvas, Row} from "react-bootstrap";
 
-import '../../styles/admin/editors.scss'
-import {insertPost} from "../../scripts/dataHandlers";
+import '../../../../styles/admin/post-editors.scss'
+import {insertPost} from "../../../../../scripts/dataHandlers";
 
 export default function AccordionPostEditor({post, show, setShow, refreshData}) {
     const [formData, setFormData] = useState(post.content)

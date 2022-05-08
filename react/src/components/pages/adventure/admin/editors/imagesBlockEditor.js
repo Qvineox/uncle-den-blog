@@ -1,8 +1,8 @@
 import {Fragment, useEffect, useState} from "react";
 import {Button, Form, Offcanvas} from "react-bootstrap";
 
-import '../../styles/admin/editors.scss'
-import {insertPost, uploadImage} from "../../scripts/dataHandlers";
+import '../../../../styles/admin/post-editors.scss'
+import {insertPost, uploadImage} from "../../../../../scripts/dataHandlers";
 
 export default function ImagesPostEditor({post, show, setShow, refreshData}) {
     const [formData, setFormData] = useState(post.content)

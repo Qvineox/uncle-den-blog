@@ -9,8 +9,11 @@ import {MapPostEditor} from "./admin/editors/mapPostEditor";
 import LinkPostEditor from "./admin/editors/linkPostEditor";
 import MapHelperPostEditor from "./admin/editors/mapHelperPostEditor";
 import ImagePostEditor from "./admin/editors/imageBlockEditor";
-import {deletePost} from "./scripts/dataHandlers";
+import {deletePost} from "../../../scripts/dataHandlers";
 import ImagesPostEditor from "./admin/editors/imagesBlockEditor";
+
+// styles
+import '../../styles/articles/post-blocks.scss'
 
 export const ACTIONS = {
     ADD_TEXT_BLOCK: 'text', // content
@@ -81,10 +84,12 @@ export function ArticleBlock({post, requestRefresh}) {
 
         return (
             <Fragment>
-                <div className={"article-block text"}>
-                    <p>
-                        {post.content.text}
-                    </p>
+                <div className={"article-block"}>
+                    <div className="article-block__simple-text">
+                        <p>
+                            {post.content.text}
+                        </p>
+                    </div>
                     {isAdmin &&
                         <Fragment>
                             <div className={"block-tooltip"}>
@@ -106,8 +111,8 @@ export function ArticleBlock({post, requestRefresh}) {
 
         return (
             <Fragment>
-                <div className={"article-block image"}>
-                    <div className={post.content.inverted ? "article-block image-right" : "article-block image-left"}>
+                <div className={"article-block"}>
+                    <div className={post.content.inverted ? "article-block__image_inverted" : "article-block__image"}>
                         <p>
                             {post.content.text}
                         </p>
@@ -134,17 +139,17 @@ export function ArticleBlock({post, requestRefresh}) {
 
         return (
             <Fragment>
-                <div className={"article-block article-block__images"}>
-                    <div className={"article-block__images-container"}>
+                <div className={"article-block"}>
+                    <div className={"article-block__multiple-images"}>
                         {post.content.images.map((image, index) => {
                             return (<img key={index}
                                          src={`${process.env.REACT_APP_BACKEND_HOST}${image.path}`}
                                          alt={image.alt}/>)
                         })}
                     </div>
-                    <div className={'article-block__images-text'}>
+                    <p className={'article-block__multiple-images__text'}>
                         {post.content.text}
-                    </div>
+                    </p>
                     {isAdmin &&
                         <Fragment>
                             <div className={"block-tooltip"}>
@@ -259,7 +264,7 @@ export function ArticleBlock({post, requestRefresh}) {
 
         return (
             <Fragment>
-                <div className="article-block map-block simple" style={{height: `${post.content.height}vh`}}>
+                <div className="article-block article-block__simple-map" style={{height: `${post.content.height}vh`}}>
                     {isLoaded ?
                         <GoogleMap
                             mapContainerStyle={{
@@ -383,8 +388,8 @@ export function ArticleBlock({post, requestRefresh}) {
 
         return (
             <Fragment>
-                <div className={"article-block article-block-link"}>
-                    <img className="article-block-link__image"
+                <div className={"article-block article-block__link"}>
+                    <img className="article-block__link__image"
                          src={`${process.env.REACT_APP_BACKEND_HOST}${post.content.image.path}`}
                          alt={post.content.image.alt}/>
                     <div className="article-block-link__text">
@@ -393,15 +398,16 @@ export function ArticleBlock({post, requestRefresh}) {
                             <hr/>
                             {post.content.description}
                         </h5>
+                        {isAdmin && <Fragment>
+                            <div className={"block-tooltip"}>
+                                <Button onClick={() => setShowEdit(true)} variant={"outline-light"}>Edit</Button>
+                                <Button onClick={() => deleteBlock(post.id)} variant={"outline-danger"}>Delete</Button>
+                            </div>
+                            <LinkPostEditor refreshData={requestRefresh} post={post} show={showEdit}
+                                            setShow={setShowEdit}/>
+                        </Fragment>}
                     </div>
-                    {isAdmin && <Fragment>
-                        <div className={"block-tooltip"}>
-                            <Button onClick={() => setShowEdit(true)} variant={"outline-light"}>Edit</Button>
-                            <Button onClick={() => deleteBlock(post.id)} variant={"outline-danger"}>Delete</Button>
-                        </div>
-                        <LinkPostEditor refreshData={requestRefresh} post={post} show={showEdit}
-                                        setShow={setShowEdit}/>
-                    </Fragment>}
+
                 </div>
             </Fragment>
         )

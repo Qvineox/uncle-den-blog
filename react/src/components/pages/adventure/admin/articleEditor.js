@@ -1,9 +1,9 @@
 import {Fragment} from "react";
 import {Button, Dropdown} from "react-bootstrap";
 import {ACTIONS} from "../blocks";
-import {createPost} from "./scripts/postHandlers";
-import {insertPost} from "../scripts/dataHandlers";
+import {insertPost} from "../../../../scripts/dataHandlers";
 
+import '../../../styles/admin/post-editors.scss'
 
 export default function EditorPanel({adventureId, requestRefresh}) {
     function handlePost({action}) {

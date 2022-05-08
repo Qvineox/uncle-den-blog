@@ -1,7 +1,6 @@
 import {Fragment, useEffect, useState} from "react";
-import {createPost, updatePost} from "../scripts/postHandlers";
 import {Button, Card, Col, Form, ListGroup, Modal, Offcanvas, Row} from "react-bootstrap";
-import {insertPost, uploadImage} from "../../scripts/dataHandlers";
+import {insertPost, uploadImage} from "../../../../../scripts/dataHandlers";
 
 export default function CarouselPostEditor({post, show, setShow, refreshData}) {
     const [formData, setFormData] = useState({
