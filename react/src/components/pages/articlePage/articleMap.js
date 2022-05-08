@@ -1,7 +1,7 @@
 import {Fragment, useCallback, useEffect, useRef, useState} from "react";
 import {GoogleMap, useJsApiLoader} from "@react-google-maps/api";
 
-export default function AdventureMap({scrollPosition, mapData}) {
+export default function ArticleMap({scrollPosition, mapData}) {
     const [mapState, setMapState] = useState({
         center: mapData.positions[0],
         zoom: 5

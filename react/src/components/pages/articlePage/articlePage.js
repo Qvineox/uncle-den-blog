@@ -1,12 +1,12 @@
 import {Fragment, useEffect, useRef, useState} from "react";
 import {useParams} from "react-router-dom";
-import {ArticleBlock} from "./blocks";
 
-import AdventureMap from "./adventureMap";
+import ArticleMap from "./articleMap";
 import EditorPanel from "./admin/articleEditor";
 
 // styles
 import '../../styles/articles/article-page.scss'
+import {ArticleBlock} from "./articleBlocks";
 
 const isAdmin = localStorage.getItem('isAdmin') === 'true'
 
@@ -74,7 +74,7 @@ export default function Article(props) {
                     </div>
                     <div className={"article-body"}>
                         <div className={"article-body__map"}>
-                            <AdventureMap mapData={adventureData.map} scrollPosition={scrollPosition}/>
+                            <ArticleMap mapData={adventureData.map} scrollPosition={scrollPosition}/>
                         </div>
                         <div onScroll={() => scrollEffect(scrollPosition)} ref={articleContent}
                              className={"article-body__posts"}>
