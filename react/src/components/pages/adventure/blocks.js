@@ -75,15 +75,6 @@ export function ArticleBlock({post, requestRefresh}) {
         requestRefresh()
     }
 
-    const AdminPanel = ({id, setShowEdit}) => {
-        return (
-            <div className={"block-tooltip"}>
-                <Button onClick={() => setShowEdit(true)} variant={"outline-light"}>Edit</Button>
-                <Button onClick={() => deleteBlock(id)} variant={"outline-danger"}>Delete</Button>
-            </div>
-        )
-    }
-
     const SimpleTextBlock = ({post}) => {
 
         const [showEdit, setShowEdit] = useState(false)
@@ -143,12 +134,17 @@ export function ArticleBlock({post, requestRefresh}) {
 
         return (
             <Fragment>
-                <div className={"article-block images"}>
-                    {post.content.images.map((image, index) => {
-                        return (<img key={index}
-                                     src={`${process.env.REACT_APP_BACKEND_HOST}${image.path}`}
-                                     alt={image.alt}/>)
-                    })}
+                <div className={"article-block article-block__images"}>
+                    <div className={"article-block__images-container"}>
+                        {post.content.images.map((image, index) => {
+                            return (<img key={index}
+                                         src={`${process.env.REACT_APP_BACKEND_HOST}${image.path}`}
+                                         alt={image.alt}/>)
+                        })}
+                    </div>
+                    <div className={'article-block__images-text'}>
+                        {post.content.text}
+                    </div>
                     {isAdmin &&
                         <Fragment>
                             <div className={"block-tooltip"}>
@@ -170,14 +166,13 @@ export function ArticleBlock({post, requestRefresh}) {
 
         return (
             <div className={"article-block"}>
-                <Carousel className={"article-block"}>
+                <Carousel className={"article-block__carousel"}>
                     {post.content.carouselItems.map((item, i) => {
                         return (
                             <Carousel.Item key={i} interval={item.interval}>
                                 <img
-                                    className="d-block w-100"
-                                    src={`${process.env.REACT_APP_BACKEND_HOST}${item.image}`}
-                                    alt={item.title}
+                                    src={`${process.env.REACT_APP_BACKEND_HOST}${item.image.path}`}
+                                    alt={item.image.alt}
                                 />
                                 <Carousel.Caption>
                                     <h3>{item.title}</h3>
@@ -243,8 +238,7 @@ export function ArticleBlock({post, requestRefresh}) {
 
                 mapLocations.push(<CustomMarker key={i} position={position} info={{
                     title: item.title,
-                    description: item.description,
-                    image: item.image
+                    description: item.description
                 }}/>)
             })
 
@@ -391,7 +385,8 @@ export function ArticleBlock({post, requestRefresh}) {
             <Fragment>
                 <div className={"article-block article-block-link"}>
                     <img className="article-block-link__image"
-                         src={`${process.env.REACT_APP_BACKEND_HOST}${post.content.image}`}/>
+                         src={`${process.env.REACT_APP_BACKEND_HOST}${post.content.image.path}`}
+                         alt={post.content.image.alt}/>
                     <div className="article-block-link__text">
                         <h1>{post.content.title}</h1>
                         <h5>

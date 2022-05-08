@@ -91,13 +91,19 @@ export default function EditorPanel({adventureId, requestRefresh}) {
                         {
                             title: 'Новый заголовок 1',
                             description: 'Новое описание 1',
-                            image: '/public/images/placeholders/1600x600-placeholder.png',
+                            image: {
+                                path: '/public/images/placeholders/1600x600-placeholder.png',
+                                alt: 'Изображение отсутствует.'
+                            },
                             interval: 5000
                         },
                         {
                             title: 'Новый заголовок 2',
                             description: 'Новое описание 2',
-                            image: '/public/images/placeholders/1600x600-placeholder.png',
+                            image: {
+                                path: '/public/images/placeholders/1600x600-placeholder.png',
+                                alt: 'Изображение отсутствует.'
+                            },
                             interval: 5000
                         },
                     ]

@@ -1,21 +1,47 @@
 import {Fragment, useEffect, useState} from "react";
 import {createPost, updatePost} from "../scripts/postHandlers";
 import {Button, Card, Col, Form, ListGroup, Modal, Offcanvas, Row} from "react-bootstrap";
-import {insertPost} from "../../scripts/dataHandlers";
+import {insertPost, uploadImage} from "../../scripts/dataHandlers";
 
 export default function CarouselPostEditor({post, show, setShow, refreshData}) {
-    const [formData, setFormData] = useState(post.content)
+    const [formData, setFormData] = useState({
+        id: post.id,
+        order: post.order,
+        carouselItems: post.content.carouselItems.map((item, index) => ({
+            title: item.title,
+            description: item.description,
+            interval: item.interval,
+            image: {
+                path: item.image.path,
+                alt: item.image.alt,
+                interval: item.image.interval,
+
+                // for properties stored locally; delete before fetch
+                local: false,
+                data: null
+            }
+        }))
+    })
+
     const [selectedItem, setSelectedItem] = useState(null)
 
     const addCarouselItem = () => {
         setFormData(values => ({
+            ...values,
             carouselItems: [
                 ...values.carouselItems,
                 {
                     title: 'Новый заголовок.',
                     description: 'Новое описание.',
-                    image: '/assets/images/1600x600-placeholder.png',
-                    interval: 5000
+                    interval: 5000,
+                    image: {
+                        path: null,
+                        alt: null,
+
+                        // for properties stored locally; delete before fetch
+                        local: true,
+                        data: null
+                    }
                 }
             ]
         }))
@@ -35,16 +61,61 @@ export default function CarouselPostEditor({post, show, setShow, refreshData}) {
     }
 
     const handleSubmit = (evt) => {
-        if (post.id) {
-            const payload = {
+        if (post.id && formData.carouselItems.length > 0) {
+            let payload = {
                 id: post.id,
-                content: formData
+                content: {
+                    carouselItems: formData.carouselItems.map(item => ({
+                        title: item.title,
+                        description: item.description,
+                        interval: item.interval,
+                        image: {
+                            path: item.image.path,
+                            interval: item.image.interval,
+                            local: item.image.local,
+                            alt: item.image.alt
+                        }
+                    }))
+
+                }
+            }
+            let imagesPayload = []
+
+            formData.carouselItems.forEach((item, index) => {
+                // check if image needs to be uploaded
+                if (item.image.local && item.image.data) {
+                    imagesPayload.push(item.image.data)
+                }
+            })
+
+            if (imagesPayload.length > 0) {
+                uploadImage(imagesPayload, post.id)
+                    .catch(error => console.log(error))
+                    .then(result => {
+                        payload.content.carouselItems.forEach((item, index) => {
+                            if (item.image.local) {
+                                let {filePath, fileAlt} = result.data.images.shift()
+
+                                payload.content.carouselItems[index].image = {
+                                    path: filePath,
+                                    alt: fileAlt,
+                                }
+                            } else {
+                                payload.content.carouselItems[index].image = {
+                                    path: payload.content.carouselItems[index].image.path,
+                                    alt: payload.content.carouselItems[index].image.alt,
+                                }
+                            }
+                        })
+                    })
             }
 
             insertPost(payload)
+                .catch(error => alert(error))
+                .then(refreshData())
+
         }
 
-        refreshData()
         evt.preventDefault()
     }
 
@@ -64,14 +135,14 @@ export default function CarouselPostEditor({post, show, setShow, refreshData}) {
                                             selectedItem={selectedItem}
                                             setSelectedItem={setSelectedItem}/>
 
-                    <Card className={'post-editor__card-items'}>
+                    <Card className={'post-editor__carousel-items'}>
                         <Card.Header>Компоненты карусели</Card.Header>
                         {formData.carouselItems.length > 0 ?
                             <ListGroup variant="flush">
                                 {formData.carouselItems.map((item, i) => {
                                     return (
                                         <Fragment key={i}>
-                                            <ListGroup.Item className={'post-editor__card-items__marker'}>
+                                            <ListGroup.Item className={'post-editor__carousel-items__item'}>
                                                 <Row>
                                                     <Col md={10}>
                                                         <h5 className={'post-editor__card-items__marker__title'}>
@@ -90,6 +161,18 @@ export default function CarouselPostEditor({post, show, setShow, refreshData}) {
                                                         <div className={'post-editor__card-items__marker__description'}>
                                                             {item.description}
                                                         </div>
+                                                    </Col>
+                                                </Row>
+                                                <Row>
+                                                    <Col md={12}>
+                                                        {item.image.path ?
+                                                            <img className={item.image.local ? 'local' : 'uploaded'}
+                                                                 alt={item.image.alt}
+                                                                 src={item.image.local ? item.image.path : `${process.env.REACT_APP_BACKEND_HOST}${item.image.path}`}/>
+                                                            :
+                                                            <div className={'local'}>
+                                                                <i>Изображение отсутствует.</i>
+                                                            </div>}
                                                     </Col>
                                                 </Row>
                                             </ListGroup.Item>
@@ -150,6 +233,19 @@ const CarouselPostItemEditor = ({formData, setFormData, selectedItem, setSelecte
             }))
     }
 
+    const handleImage = (evt) => {
+        const file = evt.target.files[0]
+
+        setItemData(values => ({
+            ...values,
+            image: {
+                path: URL.createObjectURL(file),
+                local: true,
+                data: file
+            }
+        }))
+    }
+
     const handleClose = () => {
         setSelectedItem(null)
     }
@@ -191,6 +287,14 @@ const CarouselPostItemEditor = ({formData, setFormData, selectedItem, setSelecte
                                   value={itemData?.description}/>
                     <Form.Text className='modal-form__form__hint'>
                         Рекомендуется до 50 символов.
+                    </Form.Text>
+                </Form.Group>
+
+                <Form.Group className={"modal-form__form"}>
+                    <Form.Label className={"modal-form__form__label"}>Изображение</Form.Label>
+                    <Form.Control className={'post-editor__form_image'} type="file" onChange={handleImage}/>
+                    <Form.Text className='post-editor__form__hint'>
+                        Изображение с устройства.
                     </Form.Text>
                 </Form.Group>
 

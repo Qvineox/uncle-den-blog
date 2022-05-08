@@ -365,8 +365,8 @@ export class CustomMarker extends Component {
                 {showInfoWindow && (
                     <InfoWindow>
                         <Card>
-                            <Card.Img variant="top"
-                                      src={process.env.PUBLIC_URL + this.props.info.image}/>
+                            {/*<Card.Img variant="top"*/}
+                            {/*          src={process.env.PUBLIC_URL + this.props.info.image}/>*/}
                             <Card.Body>
                                 <Card.Title>{this.props.info.title}</Card.Title>
                                 <Card.Text>{this.props.info.description}</Card.Text>
