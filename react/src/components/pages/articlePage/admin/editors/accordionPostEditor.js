@@ -69,7 +69,6 @@ export default function AccordionPostEditor({post, show, setShow, refreshData}) 
                             {formData.accordionItems.map((marker, i) => {
                                 return (
                                     <Fragment key={i}>
-                                        {/* TODO: Add edit and delete buttons (icons) */}
                                         <ListGroup.Item className={'post-editor__card-items__marker'}>
                                             <Row>
                                                 <Col md={10}>

@@ -296,9 +296,6 @@ const CarouselPostItemEditor = ({formData, setFormData, selectedItem, setSelecte
                         Изображение с устройства.
                     </Form.Text>
                 </Form.Group>
-
-                {/* TODO: add image form support */}
-
             </Modal.Body>
 
             <Modal.Footer>

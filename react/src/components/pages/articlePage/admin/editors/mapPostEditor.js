@@ -138,7 +138,6 @@ export function MapPostEditor({post, show, setShow, refreshData}) {
                     {formData.markers.length > 0 ? <ListGroup variant="flush">
                         {formData.markers.map((marker, i) => {
                             return (<Fragment key={i}>
-                                {/* TODO: Add edit and delete buttons (icons) */}
                                 <ListGroup.Item className={'post-editor__card-items__marker'}>
                                     <Row>
                                         <Col md={10}>
@@ -303,8 +302,6 @@ export function MapPostEditor({post, show, setShow, refreshData}) {
                                   value={itemData?.position.lng}/>
                 </Form.Group>
             </Modal.Body>
-
-            {/* TODO: Add image form */}
 
             <Modal.Footer>
                 <Button variant="secondary" onClick={handleClose}>
