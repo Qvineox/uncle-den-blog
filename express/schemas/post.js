@@ -10,7 +10,7 @@ module.exports = function (sequelize) {
         order: {
             type: DataTypes.SMALLINT,
             allowNull: true,
-            unique: true
+            unique: false
         },
         type: {
             type: DataTypes.STRING,

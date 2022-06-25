@@ -5,3 +5,5 @@
 
 /express/public/
 
+/backend/venv/
+/backend/db.sqlite3
