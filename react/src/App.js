@@ -5,7 +5,7 @@ import {FpsView} from "react-fps";
 import Home from "./components/pages/home/home";
 import {BrowserRouter as Router, Route, Routes} from "react-router-dom";
 import Regions from "./components/pages/countries/countries";
-import Adventures from "./components/pages/adventures/adventures";
+import Journey from "./components/pages/adventures/journey";
 import {Globe} from "./components/pages/globe";
 import Article from "./components/pages/articlePage/articlePage";
 
@@ -22,7 +22,7 @@ function App() {
                     <Route path="/" exact element={<Home/>}/>
                     <Route path="/regions" exact element={<Regions/>}/>
                     <Route path="/articles/:id" element={<Article/>}/>
-                    <Route path="/adventures" exact element={<Adventures/>}/>
+                    <Route path="/journeys" exact element={<Journey/>}/>
                     <Route path="/globe" exact element={<Globe/>}/>
                 </Routes>
 

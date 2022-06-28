@@ -16,7 +16,7 @@ router.get('/', async (req, res) => {
         })
     }
 
-    console.info('> Adventures data requested')
+    console.info('> Journey data requested')
     res.status(200).json(payload)
 })
 

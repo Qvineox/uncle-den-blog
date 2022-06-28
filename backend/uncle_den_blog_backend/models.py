@@ -1,6 +1,33 @@
 from django.db import models
 
 
+class Country(models.Model):
+    REGIONS = (
+        ('russia', 'Россия'),
+        ('europe', 'Европа'),
+        ('middle-east', 'Ближний Восток'),
+        ('central-asia', 'Центральная Азия'),
+        ('far-east', 'Дальний Восток'),
+        ('africa', 'Африка'),
+        ('australia', 'Австралия'),
+        ('north-america', 'Северная Америка'),
+        ('south-america', 'Южная Америка'),
+        ('etc', 'Другое'),
+    )
+
+    name = models.CharField(max_length=50, null=False, verbose_name='Название')
+    code = models.CharField(max_length=10, null=True, default='xx', verbose_name='Код')
+
+    region = models.CharField(max_length=20, choices=REGIONS, null=False, default='etc', verbose_name='Регион')
+
+    class Meta:
+        verbose_name = 'страна'
+        verbose_name_plural = 'страны'
+
+    def __str__(self):
+        return f'{self.name} ({self.code.upper()})'
+
+
 class Journey(models.Model):
     title = models.CharField(max_length=30, unique=True, null=False, blank=False, verbose_name='Название')
     description = models.CharField(max_length=100, null=True, verbose_name='Описание')
@@ -11,6 +38,8 @@ class Journey(models.Model):
 
     path = models.JSONField(null=False, default=dict)  # todo: add path encoder
     map = models.JSONField(null=False, default=dict)  # todo: add map encoder
+
+    countries = models.ManyToManyField(Country, verbose_name='Посещенные страны')
 
     class Meta:
         verbose_name = 'поездка'
@@ -35,6 +64,7 @@ class Article(models.Model):
     map = models.JSONField(null=True, default=dict, verbose_name='Карта')  # todo: add map encoder
 
     journey = models.ForeignKey(Journey, on_delete=models.CASCADE, null=False, verbose_name='Поездка')
+    country = models.ForeignKey(Country, on_delete=models.CASCADE, null=True, verbose_name='Страна')
 
     class Meta:
         verbose_name = 'статья'
@@ -67,31 +97,8 @@ class Post(models.Model):
     article = models.ForeignKey(Article, on_delete=models.CASCADE, null=False, verbose_name='Статья')
 
     class Meta:
-        verbose_name = 'запись'
-        verbose_name_plural = 'записи'
+        verbose_name = 'пост'
+        verbose_name_plural = 'посты'
 
     def __str__(self):
         return f'{self.type}: {self.id}'
-
-
-class Country(models.Model):
-    name = models.CharField(max_length=50, null=False, verbose_name='Название')
-    code = models.CharField(max_length=10, null=True, default='xx', verbose_name='Код')
-
-    class Meta:
-        verbose_name = 'страна'
-        verbose_name_plural = 'страны'
-
-    def __str__(self):
-        return f'{self.name} ({self.code.upper()})'
-
-
-class CountryVisit(models.Model):
-    article = models.ForeignKey(Article, on_delete=models.CASCADE, verbose_name='Статья')
-    country = models.ForeignKey(Country, on_delete=models.CASCADE, verbose_name='Страна')
-
-    latest_visit = models.DateField(verbose_name='Последнее посещение')
-
-    class Meta:
-        verbose_name = 'посещение страны'
-        verbose_name_plural = 'посещения стран'

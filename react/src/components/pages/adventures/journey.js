@@ -1,20 +1,19 @@
 import {Fragment, useEffect, useState} from "react";
 import './styles/adventures.css'
 import 'flag-icons/css/flag-icons.css'
-import MyGoogleMap from "../../assets/myGoogleMap";
 import {useJsApiLoader} from "@react-google-maps/api";
 import {Spinner} from "react-bootstrap";
-import {Link} from "react-router-dom";
-import AdventureCard from "./components/adventureCard";
+import JourneyCard from "./components/journeyCard";
 
-export default function Adventures() {
-    const [adventures, setAdventures] = useState(null)
+export default function Journey() {
+    const [journeys, setJourneys] = useState(null)
 
     useEffect(() => {
-        fetch("http://localhost:3002/adventures").then(response => {
+        fetch(`${process.env.REACT_APP_BACKEND_HOST}/api/journeys/`).then(response => {
             return response.json()
         }).then((data) => {
-            setAdventures(data.result)
+            console.log(data)
+            setJourneys(data)
         })
     }, [])
 
@@ -30,9 +29,9 @@ export default function Adventures() {
             </div>
             <div className={"adventures__wrapper"}>
 
-                {isLoaded && adventures ? adventures.map(adventure => {
+                {isLoaded && journeys ? journeys.map(journey => {
                         return (
-                            <AdventureCard adventure={adventure} />
+                            <JourneyCard key={journey.id} journey={journey} />
                         )
                     })
                     :

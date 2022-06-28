@@ -55,7 +55,7 @@ function MenuBubble(props) {
                     </div>
                 </Link>
 
-                <Link to={'/adventures'}>
+                <Link to={'/journeys'}>
                     <div ref={menuPosts} className={"menu-bubble menu-bubble-posts"}>
                         <img src={bookIcon} alt={"book icon"}/>
                     </div>
