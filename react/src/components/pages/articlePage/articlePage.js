@@ -41,17 +41,20 @@ export default function Article(props) {
     const loadData = () => {
         console.debug('> receiving data...')
 
-        fetch(`${process.env.REACT_APP_BACKEND_HOST}/adventures/${id}`).then(response => {
+        let url = new URL(`${process.env.REACT_APP_BACKEND_HOST}/api/articles/${id}/`)
+        // url.search = new URLSearchParams({article_id: id}).toString()
+
+        fetch(url).then(response => {
             return response.json()
         }).then((data) => {
             console.log(data)
 
             setAdventureData({
                 isLoaded: true,
-                title: data.result.title,
-                description: data.result.description,
-                posts: data.result.posts,
-                map: data.result.map,
+                title: data.title,
+                description: data.description,
+                posts: data.post_set,
+                map: data.offset_map,
             })
         })
 

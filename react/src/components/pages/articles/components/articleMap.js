@@ -1,11 +1,10 @@
 import {Fragment, useCallback, useEffect, useRef, useState} from "react";
 import {GoogleMap, useJsApiLoader} from "@react-google-maps/api";
 
-export default function ArticleMap({scrollPosition, mapData}) {
-    const [mapState, setMapState] = useState({
-        center: mapData.positions[0],
-        zoom: 5
-    })
+export default function ArticleMap({currentCenter, currentZoom}) {
+    const [mapLocation, setMapLocation] = useState({lat: 0, lng: 0})
+    const [mapZoom, setMapZoom] = useState(4)
+
     const mapRef = useRef(undefined)
 
     const onLoad = useCallback(function callback(map) {
@@ -20,25 +19,22 @@ export default function ArticleMap({scrollPosition, mapData}) {
         id: 'google-map-script', googleMapsApiKey: process.env.REACT_APP_GOOGLE_API_KEY
     })
 
-    // change location on article scroll
     useEffect(() => {
-        if (mapData.offsets.length > 0) {
-            const closest = mapData.offsets.reduce((a, b) => {
-                return Math.abs(b - scrollPosition) < Math.abs(a - scrollPosition) ? b : a;
-            });
-
-            setMapState(values => (
-                {
-                    center: mapData.positions[mapData.offsets.indexOf(closest)],
-                    zoom: values.zoom
-                }
-            ))
-        }
-    }, [mapData.offsets, mapData.positions, scrollPosition])
+        mapRef.current?.panTo(currentCenter)
+    }, [currentCenter])
 
     useEffect(() => {
-        mapRef.current?.panTo(mapState.center)
-    }, [mapState.center])
+        mapRef.current?.setZoom(currentZoom)
+    }, [currentZoom])
+
+    useEffect(() => {
+        setMapLocation(currentCenter)
+        setMapZoom(currentZoom)
+    }, [])
+
+    // useEffect(() => {
+    //     mapRef.current?.zoom = currentZoom
+    // }, [currentZoom])
 
     return (
         <Fragment>
@@ -47,8 +43,8 @@ export default function ArticleMap({scrollPosition, mapData}) {
                     mapContainerStyle={{
                         width: '100%', height: '100%'
                     }}
-                    center={mapState.center}
-                    zoom={mapState.zoom}
+                    center={mapLocation}
+                    zoom={currentZoom}
                     onLoad={onLoad}
                     onUnmount={onUnmount}
                 />

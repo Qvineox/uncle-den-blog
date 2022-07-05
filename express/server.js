@@ -12,7 +12,7 @@ app.use(cors())
 const {Sequelize} = require("sequelize");
 
 
-app.use('/adventures', require('./routes/adventures'))
+app.use('/journeys', require('./routes/adventures'))
 
 const dbClient = new Sequelize (process.env.DATABASE_NAME, process.env.DATABASE_USER, process.env.DATABASE_PASSWORD, {
     host: process.env.DATABASE_URL,

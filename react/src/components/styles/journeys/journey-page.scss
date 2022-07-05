@@ -1,0 +1,70 @@
+.page-header {
+  position: sticky;
+
+  display: flex;
+  flex-direction: column;
+
+  h1 {
+    font-size: 2em;
+  }
+
+  h2 {
+    font-size: 1.5em;
+    font-weight: lighter;
+  }
+}
+
+.journey-data {
+  display: flex;
+  flex-direction: column;
+
+  margin-top: 1em;
+
+  $text-color: whitesmoke;
+
+  &__info {
+    width: 100%;
+    height: 20vh;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+
+    padding: 5vh 10vw;
+
+    h1, h2 {
+      color: $text-color;
+      text-align: center;
+    }
+
+    h1 {
+      font-weight: normal;
+      font-size: 4em;
+      margin-bottom: 0.5em;
+    }
+
+    h2 {
+      font-weight: lighter;
+      font-size: 2em;
+    }
+  }
+
+  &__stats {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+
+    color: $text-color;
+
+    text-align: center;
+
+    margin-top: 2em;
+    padding: 0 10vh;
+
+    h2 {
+      font-size: 2.1em;
+      font-weight: lighter;
+    }
+  }
+}

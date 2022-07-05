@@ -1,27 +1,26 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from uncle_den_blog_backend.models import Post, Journey, Article, Country
+from uncle_den_blog_backend.models import Journey, Article, Country
 
 from uncle_den_blog_backend.serializers import *
 
-
-class Posts(APIView):
-    def get(self, request, post_id=None):
-
-        if post_id:
-            payload = PostSerializer(Post.objects.get(pk=post_id), many=False).data
-        else:
-            article_id_query = request.GET.get('article_id', False)
-
-            posts_queryset = Post.objects.all()
-
-            if article_id_query:
-                posts_queryset = posts_queryset.filter(article_id=article_id_query)
-
-            payload = PostSerializer(posts_queryset, many=True).data
-
-        return Response(payload)
+#
+# class Posts(APIView):
+#     def get(self, request, post_id=None):
+#         if post_id:
+#             payload = PostSerializer(Post.objects.get(pk=post_id), many=False).data
+#         else:
+#             article_id_query = request.GET.get('article_id', False)
+#
+#             posts_queryset = Post.objects.all()
+#
+#             if article_id_query:
+#                 posts_queryset = posts_queryset.filter(article_id=article_id_query)
+#
+#             payload = PostSerializer(posts_queryset, many=True).data
+#
+#         return Response(payload)
 
 
 class Journeys(APIView):
@@ -36,7 +35,6 @@ class Journeys(APIView):
 
 class Articles(APIView):
     def get(self, request, article_id=None):
-
         if article_id:
             payload = SingleArticleSerializer(Article.objects.get(pk=article_id), many=False).data
         else:

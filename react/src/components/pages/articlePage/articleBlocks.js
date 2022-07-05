@@ -16,8 +16,8 @@ import ImagesPostEditor from "./admin/editors/imagesBlockEditor";
 import '../../styles/articles/post-blocks.scss'
 
 export const ACTIONS = {
-    ADD_TEXT_BLOCK: 'text', // content
-    ADD_IMAGE_BLOCK: 'image', // image, content
+    ADD_TEXT_BLOCK: 'text', // text
+    ADD_IMAGE_BLOCK: 'image', // image, text
     ADD_IMAGES_BLOCK: 'images', // [image]
     ADD_IMAGES_BLOCK__ADD_IMAGE: 'images_add', // [image]
     ADD_CAROUSEL_BLOCK: 'carousel', // [images, title]
@@ -116,7 +116,7 @@ export function ArticleBlock({post, requestRefresh}) {
                         <p>
                             {post.content.text}
                         </p>
-                        <img src={`${process.env.REACT_APP_BACKEND_HOST}${post.content.path}`} alt={post.content.alt}/>
+                        <img src={`${process.env.REACT_APP_BACKEND_HOST}/static${post.content.image_path}`} alt={post.content.image_alt}/>
                     </div>
                     {isAdmin &&
                         <Fragment>
@@ -143,8 +143,8 @@ export function ArticleBlock({post, requestRefresh}) {
                     <div className={"article-block__multiple-images"}>
                         {post.content.images.map((image, index) => {
                             return (<img key={index}
-                                         src={`${process.env.REACT_APP_BACKEND_HOST}${image.path}`}
-                                         alt={image.alt}/>)
+                                         src={`${process.env.REACT_APP_BACKEND_HOST}/static${image}`}
+                                         alt={image.image_alt}/>)
                         })}
                     </div>
                     <p className={'article-block__multiple-images__text'}>
@@ -172,16 +172,16 @@ export function ArticleBlock({post, requestRefresh}) {
         return (
             <div className={"article-block"}>
                 <Carousel className={"article-block__carousel"}>
-                    {post.content.carouselItems.map((item, i) => {
+                    {post.content.map((item, i) => {
                         return (
                             <Carousel.Item key={i} interval={item.interval}>
                                 <img
-                                    src={`${process.env.REACT_APP_BACKEND_HOST}${item.image.path}`}
-                                    alt={item.image.alt}
+                                    src={`${process.env.REACT_APP_BACKEND_HOST}/static${item.image_path}`}
+                                    alt={item.image_alt}
                                 />
                                 <Carousel.Caption>
                                     <h3>{item.title}</h3>
-                                    <p>{item.description}</p>
+                                    <p>{item.text}</p>
                                 </Carousel.Caption>
                             </Carousel.Item>
                         )
@@ -204,12 +204,12 @@ export function ArticleBlock({post, requestRefresh}) {
 
         return (
             <Accordion className={"article-block"} defaultActiveKey="0">
-                {post.content.accordionItems.map((item, i) => {
+                {post.content.map((item, i) => {
                     return (
                         <Fragment key={i}>
                             <Accordion.Item eventKey={i}>
                                 <Accordion.Header>{item.title}</Accordion.Header>
-                                <Accordion.Body>{item.description}</Accordion.Body>
+                                <Accordion.Body>{item.text}</Accordion.Body>
                             </Accordion.Item>
                         </Fragment>
                     )
@@ -235,7 +235,7 @@ export function ArticleBlock({post, requestRefresh}) {
         useEffect(() => {
             let mapLocations = []
 
-            post.content.markers.map((item, i) => {
+            post.content.map((item, i) => {
                 let position = {
                     lat: parseFloat(item.position.lat),
                     lng: parseFloat(item.position.lng)
@@ -243,7 +243,7 @@ export function ArticleBlock({post, requestRefresh}) {
 
                 mapLocations.push(<CustomMarker key={i} position={position} info={{
                     title: item.title,
-                    description: item.description
+                    description: item.text
                 }}/>)
             })
 
@@ -264,17 +264,17 @@ export function ArticleBlock({post, requestRefresh}) {
 
         return (
             <Fragment>
-                <div className="article-block article-block__simple-map" style={{height: `${post.content.height}vh`}}>
+                <div className="article-block article-block__simple-map" style={{height: `40vh`}}>
                     {isLoaded ?
                         <GoogleMap
                             mapContainerStyle={{
                                 width: '100%', height: '100%'
                             }}
                             center={{
-                                lat: parseFloat(post.content.center.lat),
-                                lng: parseFloat(post.content.center.lng)
+                                lat: parseFloat(post.content[0].position.lat),
+                                lng: parseFloat(post.content[0].position.lng)
                             }}
-                            zoom={post.content.zoom}
+                            zoom={post.content[0].zoom}
                             onLoad={onLoad}
                             onUnmount={onUnmount}>
                             {mapItems}
@@ -309,14 +309,14 @@ export function ArticleBlock({post, requestRefresh}) {
             let accordionItems = []
             let mapLocations = []
 
-            post.content.markers.map((item, i) => {
+            post.content.map((item, i) => {
                 accordionItems.push(
                     <Fragment key={i}>
                         <Accordion.Item onClick={() => {
                             setCurrentItem(i)
                         }} eventKey={i}>
                             <Accordion.Header>{item.title}</Accordion.Header>
-                            <Accordion.Body>{item.description}</Accordion.Body>
+                            <Accordion.Body>{item.text}</Accordion.Body>
                         </Accordion.Item>
                     </Fragment>
                 )
@@ -326,11 +326,11 @@ export function ArticleBlock({post, requestRefresh}) {
 
             setAccordionItems(accordionItems)
             setMapItems(mapLocations)
-        }, [post.content.markers])
+        }, [post.content])
 
         useEffect(() => {
-            mapRef.current?.panTo(post.content.markers[currentItem].position)
-        }, [post.content.markers, currentItem])
+            mapRef.current?.panTo(post.content[currentItem].position)
+        }, [post.content, currentItem])
 
         const onLoad = useCallback(function callback(map) {
             mapRef.current = map
@@ -390,13 +390,13 @@ export function ArticleBlock({post, requestRefresh}) {
             <Fragment>
                 <div className={"article-block article-block__link"}>
                     <img className="article-block__link__image"
-                         src={`${process.env.REACT_APP_BACKEND_HOST}${post.content.image.path}`}
-                         alt={post.content.image.alt}/>
+                         src={`${process.env.REACT_APP_BACKEND_HOST}/static${post.content.image_path}`}
+                         alt={post.content.image_alt}/>
                     <div className="article-block-link__text">
                         <h1>{post.content.title}</h1>
                         <h5>
                             <hr/>
-                            {post.content.description}
+                            {post.content.text}
                         </h5>
                         {isAdmin && <Fragment>
                             <div className={"block-tooltip"}>

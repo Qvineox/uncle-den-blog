@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from uncle_den_blog_backend.models import Journey, Article, Post, Country
+from uncle_den_blog_backend.models import Journey, Article, Country, BasicTextPost, ImageTextPost, PostImage
 
 
 class CountrySerializer(serializers.Serializer):
@@ -46,7 +46,7 @@ class ArticleSerializer(serializers.Serializer):
     start_date = serializers.DateField(required=False, allow_null=True)
     finish_date = serializers.DateField(required=False, allow_null=True)
 
-    map = serializers.JSONField(required=True, allow_null=False)
+    offset_map = serializers.JSONField(required=True, allow_null=False)
 
     journey_id = serializers.IntegerField(required=True, allow_null=False, source='journey.id')
     country = CountrySerializer(required=False, allow_null=True)
@@ -65,76 +65,80 @@ class ArticleSerializer(serializers.Serializer):
         return instance
 
 
-class PostSerializer(serializers.Serializer):
-    POST_TYPES = (
-        ('text', 'Текстовый блок'),
-        ('map', 'Блок с картой'),
-        ('map-helper', 'Карта с подсказками'),
-        ('carousel', 'Блок-карусель'),
-        ('image', 'Блок с картинкой'),
-        ('images', 'Несколько картинок'),
-        ('link', 'Блок со ссылкой'),
-        ('accordion', 'Блок-аккордион'),
-    )
-
-    id = serializers.IntegerField(read_only=True)
-    type = serializers.ChoiceField(required=True, allow_null=False, allow_blank=False, choices=POST_TYPES)
-    content = serializers.JSONField(required=True, allow_null=False)
-
-    article_id = serializers.IntegerField(required=True, allow_null=False, source="article.id")
-
-    def create(self, validated_data):
-        return Post.objects.create(**validated_data)
-
-    def update(self, instance, validated_data):
-        instance.type = validated_data.get('type', instance.type)
-        instance.content = validated_data.get('content', instance.content)
-        instance.article = validated_data.get('article', instance.article)
-        instance.save()
-
-        return instance
-
-    def check_type_content(self):
-        if self.type == 'text':  # todo: check JSON content accordion to post type
-            print('obama')
-
-
 class JourneySerializer(serializers.ModelSerializer):
-    id = serializers.IntegerField(read_only=True)
-
-    title = serializers.CharField(required=True, allow_null=False, allow_blank=False, max_length=30)
-    description = serializers.CharField(required=True, allow_null=False, allow_blank=True, max_length=100)
-    distance = serializers.FloatField(required=False, allow_null=True)
-
-    start_date = serializers.DateField(required=False, allow_null=True)
-    finish_date = serializers.DateField(required=False, allow_null=True)
-
-    path = serializers.JSONField(required=True, allow_null=False)
-    map = serializers.JSONField(required=True, allow_null=False)
-
-    countries = CountrySerializer(read_only=True, required=False, many=True)
-    article_set = serializers.PrimaryKeyRelatedField(read_only=True, required=False, many=True)
-
-    def create(self, validated_data):
-        return Journey.objects.create(**validated_data)
-
-    def update(self, instance, validated_data):
-        instance.title = validated_data.get('title', instance.title)
-        instance.description = validated_data.get('description', instance.description)
-        instance.distance = validated_data.get('distance', instance.distance)
-        instance.path = validated_data.get('path', instance.path)
-        instance.map = validated_data.get('map', instance.map)
-        instance.save()
-
-        return instance
-
     class Meta:
         model = Journey
-        fields = ['id', 'title', 'description', 'distance', 'start_date', 'finish_date', 'path', 'map',
+        fields = ['id', 'title', 'description', 'distance', 'start_date', 'finish_date', 'image',
                   'article_set', 'countries']
 
+        ordering = ['start_date', ]
 
-class SingleArticleSerializer(serializers.Serializer):
+    class JourneyArticleSerializer(serializers.ModelSerializer):
+        id = serializers.IntegerField(read_only=True)
+        title = serializers.CharField(read_only=True)
+
+        class Meta:
+            model = Article
+            fields = ['id', 'title']
+
+            ordering = ['id']
+
+    id = serializers.IntegerField(read_only=True)
+
+    title = serializers.CharField(required=True, allow_null=False, allow_blank=False, max_length=30)
+    description = serializers.CharField(required=True, allow_null=False, allow_blank=True, max_length=100)
+    distance = serializers.FloatField(required=False, allow_null=True)
+
+    start_date = serializers.DateField(required=False, allow_null=True, format="%d-%m-%Y")
+    finish_date = serializers.DateField(required=False, allow_null=True)
+
+    countries = CountrySerializer(read_only=True, required=False, many=True)
+    article_set = JourneyArticleSerializer(read_only=True, many=True)
+
+    image = serializers.ImageField(read_only=True)
+
+
+class PostImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PostImage
+        fields = ['id', 'alt', 'description', 'path']
+
+    id = serializers.IntegerField(read_only=True)
+    alt = serializers.CharField(read_only=True)
+    description = serializers.CharField(read_only=True)
+    path = serializers.ImageField(read_only=True)
+
+
+class SingleArticleSerializer(serializers.ModelSerializer):
+    class TextPostSerializer(serializers.ModelSerializer):
+        class Meta:
+            model = BasicTextPost
+            fields = ['id', 'text', 'order', 'map_latitude', 'map_longitude', 'map_zoom']
+
+        id = serializers.IntegerField(read_only=True)
+        text = serializers.CharField(read_only=True)
+        order = serializers.IntegerField(read_only=True)
+
+        map_latitude = serializers.DecimalField(max_digits=7, decimal_places=5, read_only=True)
+        map_longitude = serializers.DecimalField(max_digits=8, decimal_places=5, read_only=True)
+        map_zoom = serializers.IntegerField(read_only=True)
+
+    class ImageTextPostSerializer(serializers.ModelSerializer):
+        class Meta:
+            model = ImageTextPost
+            fields = ['id', 'text', 'image', 'order', 'alignment', 'map_latitude', 'map_longitude', 'map_zoom']
+
+        id = serializers.IntegerField(read_only=True)
+        text = serializers.CharField(read_only=True)
+        image = PostImageSerializer(many=False)
+        order = serializers.IntegerField(read_only=True)
+
+        alignment = serializers.CharField(read_only=True)
+
+        map_latitude = serializers.DecimalField(max_digits=7, decimal_places=5, read_only=True)
+        map_longitude = serializers.DecimalField(max_digits=8, decimal_places=5, read_only=True)
+        map_zoom = serializers.IntegerField(read_only=True)
+
     id = serializers.IntegerField(read_only=True)
 
     title = serializers.CharField(required=True, allow_null=False, allow_blank=False, max_length=30)
@@ -144,7 +148,18 @@ class SingleArticleSerializer(serializers.Serializer):
     start_date = serializers.DateField(required=False, allow_null=True)
     finish_date = serializers.DateField(required=False, allow_null=True)
 
-    map = serializers.JSONField(required=True, allow_null=False)
-
-    journey = JourneySerializer(read_only=True, many=False)
     country = CountrySerializer(required=False, allow_null=True)
+
+    map_latitude = serializers.DecimalField(max_digits=7, decimal_places=5, read_only=True)
+    map_longitude = serializers.DecimalField(max_digits=8, decimal_places=5, read_only=True)
+    map_zoom = serializers.IntegerField(read_only=True)
+
+    basictextpost_set = TextPostSerializer(read_only=True, many=True)
+    imagetextpost_set = ImageTextPostSerializer(read_only=True, many=True)
+
+    class Meta:
+        model = Article
+        fields = ['id', 'title', 'description', 'distance', 'start_date', 'finish_date', 'country', 'basictextpost_set',
+                  'imagetextpost_set', 'map_latitude', 'map_longitude', 'map_zoom']
+
+        depth = 1
